@@ -1,2 +1,6 @@
 newsapi-python
 python-dotenv
+google-generativeai
+pandas
+transformers
+torch
