@@ -115,26 +115,6 @@ def write_to_file(articles: Dict[str, list]) -> None:
     print(f'Wrote {len(articles["articles"])} articles to articles.json')
 
 
-def clean_cols(articles: list) -> list:
-    """
-    Cleans the columns of a list of articles.
-
-    :param articles: A list of articles.
-    :type articles: list
-    """
-    import pandas as pd
-
-    df = pd.DataFrame(articles)
-
-    # All rows with more than 1 country in the list should be removed
-    df = df[df['country'].apply(len) == 1]
-    df = df.reset_index(drop=True)
-
-    # Drop unnecessary columns
-    df = df.drop(columns=['ai_tag', 'ai_region', 'ai_org', 'content', 'image_url', 'source_icon', 'video_url', 'country', 'language', 'sentiment_stats', 'source_id', 'source_url', 'creator', 'article_id', 'pubDateTZ', 'duplicate'])
-    return df.to_dict('records')
-
-
 def fetch_all():
     """
     Fetches all articles from the NewsData.io API.
@@ -149,9 +129,6 @@ def fetch_all():
         articles_page, calls = fetch_15_minute()
         # Increment the total number of calls
         total_calls += calls
-
-        # Clean the columns of the articles
-        articles_page['articles'] = clean_cols(articles_page['articles'])
 
         # Write the articles to a JSON file
         write_to_file(articles_page)
