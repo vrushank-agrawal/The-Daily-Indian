@@ -19,11 +19,13 @@ def clean_cols(df: pd.DataFrame) -> pd.DataFrame:
             'image_url',
             'source_icon',
             'video_url',
-            # 'country',
+            'country',
+            'keywords',
             'language',
             'sentiment_stats',
             'source_id',
             'source_url',
+            'source_priority',
             'creator',
             'article_id',
             'pubDateTZ',
@@ -58,6 +60,7 @@ def clean_empty_descriptions(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+
 def clean_sources(df: pd.DataFrame) -> pd.DataFrame:
     """
     Removes rows with certain sources from a list of articles.
@@ -86,6 +89,7 @@ def clean_sources(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+
 def get_data():
     """
     Reads a JSON file containing a list of articles and returns the list of articles.
@@ -113,6 +117,43 @@ def write_data(articles):
     with open(f'data/newsdataio/cleaned/{TODAY_DATE}.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
+
+def set_the_hindu_keywords(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Sets the value of the category to that of keywords if the article is from the The Hindu.
+
+    :param articles: A list of articles.
+    :type articles: list
+    """
+
+    def return_category(keyword: str) -> str:
+        """Maps The Hindu's keywords to a more general category."""
+        category_map = {
+            "markets": "business",
+            "other sports": "sports",
+            "movies": "entertainment",
+            "india": "politics",
+        }
+        return category_map.get(keyword, keyword)
+
+    for index, article in df.iterrows():
+        if article['source_name'] == 'The Hindu':
+            if article['category'] == ["top"]:
+                df.at[index, 'category'] = [return_category(article['keywords'][0])]
+
+    return df
+
+
+def convert_category_to_string(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Converts the category column of a DataFrame to a string.
+
+    :param articles: A DataFrame of articles.
+    :type articles: pd.DataFrame
+    """
+    df['category'] = df['category'].apply(lambda x: x[0] if isinstance(x, list) else x)
+    return df
+
 def data_cleaner():
     """
     This function cleans the data in the JSON file containing a list of news articles.
@@ -124,9 +165,11 @@ def data_cleaner():
     articles = get_data()
 
     df = pd.DataFrame(articles)
-    df = clean_countries(df)
+    # df = clean_countries(df)
     # df = clean_sources(df)
     df = clean_empty_descriptions(df)
+    df = set_the_hindu_keywords(df)
+    df = convert_category_to_string(df)
     df = clean_cols(df)
 
     df.reset_index(drop=True, inplace=True)

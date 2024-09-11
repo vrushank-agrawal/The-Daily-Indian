@@ -12,7 +12,7 @@ COUNTRY = "in"
 LANG = "en"
 API_KEY = os.getenv("NEWSDATAIO_API_KEY")
 EXCLUDE_DOMAINS = "theweek.in,washingtontimes.com,firstpost.com"
-INCLUDE_DOMAINS = "business-standard.com,thehindu.com,indiatvnews.com,zeenews.india.com,scroll.in"
+INCLUDE_DOMAINS = "business-standard.com,thehindu.com,indiatvnews.com,zeenews.india.com"
 
 """
 ************************************
@@ -61,11 +61,12 @@ Source: Times of India
     Traffic/Popularity: High Traffic
     MBFC Credibility Rating: MEDIUM CREDIBILITY
 
+
 ************************************
 ACCEPTED Sources
 ************************************
 
-Source: The Hindu
+Source: The Hindu (2972)
 
     Bias Rating: LEFT-CENTER
     Factual Reporting: MOSTLY FACTUAL
@@ -75,7 +76,7 @@ Source: The Hindu
     Traffic/Popularity: High Traffic
     MBFC Credibility Rating: HIGH CREDIBILITY
 
-Source: Business Standard
+Source: Business Standard (9158)
 
     Bias Rating: RIGHT-CENTER
     Factual Reporting: MOSTLY FACTUAL
@@ -85,7 +86,7 @@ Source: Business Standard
     Traffic/Popularity: High Traffic
     MBFC Credibility Rating: HIGH CREDIBILITY
 
-Source: India.com (india.com)
+Source: Zee News (5319)
 
     Bias Rating: RIGHT-CENTER
     Factual Reporting: MOSTLY FACTUAL
@@ -95,7 +96,7 @@ Source: India.com (india.com)
     Traffic/Popularity: High Traffic
     MBFC Credibility Rating: HIGH CREDIBILITY
 
-Source: India TV
+Source: India TV News (10055)
 
     Bias Rating: RIGHT-CENTER
     Factual Reporting: MOSTLY FACTUAL
@@ -105,7 +106,12 @@ Source: India TV
     Traffic/Popularity: High Traffic
     MBFC Credibility Rating: HIGH CREDIBILITY
 
-Source: Scroll.in
+
+************************************
+Not Used Good Sources
+************************************
+
+Source: Scroll.in (26952)
 
     Bias Rating: LEFT-CENTER
     Factual Reporting: MOSTLY FACTUAL
@@ -114,11 +120,6 @@ Source: Scroll.in
     Media Type: Website
     Traffic/Popularity: High Traffic
     MBFC Credibility Rating: HIGH CREDIBILITY
-
-
-************************************
-Not Available Good Sources
-************************************
 
 Source: FirstPost
 
