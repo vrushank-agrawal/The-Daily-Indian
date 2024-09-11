@@ -1,20 +1,21 @@
 from transformers import pipeline
 import json
+from datetime import datetime, timezone
 
+# Get today's date for filename
+TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
+# Load the sentiment analysis model
 MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 
-def get_data_from_file(path: str) -> list:
+def get_data_from_file() -> list:
     """
     Reads a JSON file containing a list of articles and returns the list of articles.
-
-    Args:
-        path (str): The path to the JSON file.
 
     Returns:
         list: The list of articles.
     """
-    with open(path, 'r') as f:
+    with open(f'data/newsdataio/cleaned/{TODAY_DATE}.json', 'r') as f:
         data = json.load(f)
 
     # Extract the list of articles from the JSON data.
@@ -71,13 +72,13 @@ def run_sentiment_analyzer():
     'data/newsdataio/sentiment-analysis-output.json'.
     """
     # Load the articles from the file
-    articles = get_data_from_file('data/newsdataio/articles-cleaned.json')
+    articles = get_data_from_file()
 
     # Add the sentiment analysis to the articles
     articles = append_sentiment_to_articles(articles)
 
     # Save the results to a file
-    with open('data/newsdataio/sentiment-analysis-output.json', 'w') as f:
+    with open(f'data/newsdataio/sentiment/{TODAY_DATE}.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
 

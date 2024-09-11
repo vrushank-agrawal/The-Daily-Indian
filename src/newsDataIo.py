@@ -12,6 +12,7 @@ COUNTRY = "in"
 LANG = "en"
 API_KEY = os.getenv("NEWSDATAIO_API_KEY")
 EXCLUDE_DOMAINS = "theweek.in,washingtontimes.com,firstpost.com"
+INCLUDE_DOMAINS = "business-standard.com,thehindu.com,indianexpress.com,hindustantimes.com,economictimes.indiatimes.com"
 
 # Maximum number of API calls to make in a 15 minute burst
 MAX_CALLS = 25
@@ -19,8 +20,12 @@ MAX_CALLS = 25
 # Number of API calls made in a day
 API_LIMIT = 200
 
+# Time Block to fetch articles from in minutes
+TIME_BLOCK = 120
+
 # Time difference between EST and news time in min
-TIME_DIFF_MIN =  8 * 60 + 15
+# I use EST because datetime is timezone aware
+TIME_DIFF_MIN =  8 * 60 + 60 # hours * 60 + minutes
 
 
 def define_url(page: int) -> str:
@@ -37,7 +42,7 @@ def define_url(page: int) -> str:
            'apikey=' + API_KEY +
            '&country=' + COUNTRY +
            '&language=' + LANG +
-           '&excludedomain=' + EXCLUDE_DOMAINS)
+           '&domainurl=' + INCLUDE_DOMAINS)
 
     if page:
         url = url + '&page=' + str(page)
@@ -63,9 +68,9 @@ def fetch_page(page: int) -> list:
     return articles, nextPage
 
 
-def fetch_15_minute() -> Tuple[Dict[str, list], int]:
+def fetch_block() -> Tuple[Dict[str, list], int]:
     """
-    Fetch all articles from the NewsData.io API in a 15 minute burst.
+    Fetch all articles from the NewsData.io API in a Time Block.
 
     The API returns articles in descending order of publication time, so we
     fetch articles page by page until we reach articles that are older than
@@ -96,7 +101,7 @@ def fetch_15_minute() -> Tuple[Dict[str, list], int]:
 
         # If publication time > than current time, we've exhausted articles
         if curr_time < start_time:
-            print(f'Fetched all articles in the 15 minutes after {start_time}')
+            print(f'Fetched all articles in the {TIME_BLOCK} minutes after {start_time}')
             break
 
     return articles, calls
@@ -109,7 +114,9 @@ def write_to_file(articles: Dict[str, list]) -> None:
     :param articles: A list of articles.
     :type articles: list
     """
-    with open('data/newsdataio/articles.json', 'w') as f:
+    date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+    with open(f'data/newsdataio/articles/{date}.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
     print(f'Wrote {len(articles["articles"])} articles to articles.json')
@@ -125,16 +132,16 @@ def fetch_all():
     total_calls = 0
 
     while total_calls < API_LIMIT:
-        # Fetch articles in 15 minute intervals
-        articles_page, calls = fetch_15_minute()
+        # Fetch articles in TIME_BLOCK intervals
+        articles_page, calls = fetch_block()
         # Increment the total number of calls
         total_calls += calls
 
         # Write the articles to a JSON file
         write_to_file(articles_page)
 
-        # Sleep for 15 minutes to avoid hitting the API limit
-        time.sleep(15 * 60)
+        # Sleep for TIME_BLOCK minutes to avoid hitting the API limit
+        time.sleep(TIME_BLOCK * 60)
 
 
 if __name__ == '__main__':

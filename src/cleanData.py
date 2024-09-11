@@ -1,5 +1,8 @@
 import json
 import pandas as pd
+from datetime import datetime, timezone
+
+TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 def clean_cols(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -9,12 +12,23 @@ def clean_cols(df: pd.DataFrame) -> pd.DataFrame:
     :type articles: pd.DataFrame
     """
     # Drop unnecessary columns
-    cols = ['ai_tag', 'ai_region', 'ai_org',
-            'content', 'image_url', 'source_icon',
-            'video_url', 'country', 'language',
-            'sentiment_stats', 'source_id', 'source_url',
-            'creator', 'article_id', 'pubDateTZ',
-            'duplicate']
+    cols = ['ai_tag',
+            'ai_region',
+            'ai_org',
+            'content',
+            'image_url',
+            'source_icon',
+            'video_url',
+            # 'country',
+            'language',
+            'sentiment_stats',
+            'source_id',
+            'source_url',
+            'creator',
+            'article_id',
+            'pubDateTZ',
+            # 'duplicate'
+            ]
     df = df.drop(columns=cols)
     return df
 
@@ -82,10 +96,7 @@ def get_data():
     Returns:
         list: The list of articles.
     """
-    with open('data/newsdataio/articles.json', 'r') as f:
-        # Load the JSON data from the file.
-        # The 'data' variable is a dictionary with a single key 'articles',
-        # the value of which is a list of article dictionaries.
+    with open(f'data/newsdataio/articles/{TODAY_DATE}.json', 'r') as f:
         data = json.load(f)
 
     # Extract the list of articles from the JSON data.
@@ -99,7 +110,7 @@ def write_data(articles):
     Args:
         articles (list): The list of articles to write.
     """
-    with open('data/newsdataio/articles-cleaned.json', 'w') as f:
+    with open(f'data/newsdataio/cleaned/{TODAY_DATE}.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
 def data_cleaner():
@@ -114,7 +125,8 @@ def data_cleaner():
 
     df = pd.DataFrame(articles)
     df = clean_countries(df)
-    df = clean_sources(df)
+    # df = clean_sources(df)
+    df = clean_empty_descriptions(df)
     df = clean_cols(df)
 
     df.reset_index(drop=True, inplace=True)
