@@ -109,7 +109,7 @@ def write_to_file(articles: Dict[str, list]) -> None:
     :param articles: A list of articles.
     :type articles: list
     """
-    with open('articles.json', 'w') as f:
+    with open('data/newsdataio/articles.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
     print(f'Wrote {len(articles["articles"])} articles to articles.json')

@@ -3,7 +3,7 @@ import pandas as pd
 
 def clean_cols(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Cleans the columns of a DataFrame of articles.
+    Remove certain columns of a DataFrame of articles.
 
     :param articles: A DataFrame of articles.
     :type articles: pd.DataFrame
@@ -19,9 +19,9 @@ def clean_cols(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def clean_rows(df: pd.DataFrame) -> pd.DataFrame:
+def clean_countries(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Cleans the rows of a list of articles.
+    Cleans the rows of a list of articles where the country is >1.
 
     :param articles: A list of articles.
     :type articles: list
@@ -32,9 +32,21 @@ def clean_rows(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def clean_empty_descriptions(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cleans the rows of a list of articles where the description is empty.
+
+    :param articles: A list of articles.
+    :type articles: list
+    """
+    # All rows where json value is null should be removed
+    df = df.dropna(subset=['description'])
+
+    return df
+
 def clean_sources(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Cleans the sources of a list of articles.
+    Removes rows with certain sources from a list of articles.
 
     :param articles: A list of articles.
     :type articles: list
@@ -49,10 +61,11 @@ def clean_sources(df: pd.DataFrame) -> pd.DataFrame:
                      'Gsm Arena',           # Mobile Phones
                      'Onmanorama',          # Kerala
                      'Mathrubhumi English', # Kerala
+                     'Deccan Chronicle',    # Hyderabad
                     )
 
-    # All source_name values < 20000 should be removed
-    df = df[df['source_name'].str.len() < 20000]
+    # All source_name integer values < '20000' should be kept
+    df = df[df['source_priority'].isin(range(20000))]
 
     # All source_name values in local_sources should be removed
     df = df[~df['source_name'].isin(local_sources)]
@@ -86,7 +99,7 @@ def write_data(articles):
     Args:
         articles (list): The list of articles to write.
     """
-    with open('data/newsdataio/articles.json', 'w') as f:
+    with open('data/newsdataio/articles-cleaned.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
 def data_cleaner():
@@ -100,8 +113,9 @@ def data_cleaner():
     articles = get_data()
 
     df = pd.DataFrame(articles)
+    df = clean_countries(df)
+    df = clean_sources(df)
     df = clean_cols(df)
-    df = clean_rows(df)
 
     df.reset_index(drop=True, inplace=True)
     articles = df.to_dict('records')

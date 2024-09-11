@@ -15,13 +15,10 @@ def get_data_from_file(path: str) -> list:
         list: The list of articles.
     """
     with open(path, 'r') as f:
-        # Load the JSON data from the file.
-        # The 'data' variable is a dictionary with a single key 'articles',
-        # the value of which is a list of article dictionaries.
         data = json.load(f)
 
     # Extract the list of articles from the JSON data.
-    return data['articles']
+    return data
 
 
 def append_sentiment_to_articles(articles: list) -> list:
@@ -52,12 +49,11 @@ def append_sentiment_to_articles(articles: list) -> list:
             continue
 
         # If the article description is too long, truncate it
-        if len(article['description']) > 511:
-            article['description'] = article['description'][:511]
+        desc = article['description'][:511] if len(article['description']) > 511 else article['description']
 
         # Analyze the sentiment of the article
         articles_analyzed += 1
-        result = sentiment_pipeline(article['description'])
+        result = sentiment_pipeline(desc)
         article['sentiment'] = result[0]['label']
         article['sentiment_score'] = result[0]['score']
 
@@ -75,7 +71,7 @@ def run_sentiment_analyzer():
     'data/newsdataio/sentiment-analysis-output.json'.
     """
     # Load the articles from the file
-    articles = get_data_from_file('data/newsdataio/articles.json')
+    articles = get_data_from_file('data/newsdataio/articles-cleaned.json')
 
     # Add the sentiment analysis to the articles
     articles = append_sentiment_to_articles(articles)
