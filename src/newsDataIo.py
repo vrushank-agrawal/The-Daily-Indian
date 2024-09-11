@@ -12,7 +12,125 @@ COUNTRY = "in"
 LANG = "en"
 API_KEY = os.getenv("NEWSDATAIO_API_KEY")
 EXCLUDE_DOMAINS = "theweek.in,washingtontimes.com,firstpost.com"
-INCLUDE_DOMAINS = "business-standard.com,thehindu.com,indianexpress.com,hindustantimes.com,economictimes.indiatimes.com"
+INCLUDE_DOMAINS = "business-standard.com,thehindu.com,indiatvnews.com,zeenews.india.com,scroll.in"
+
+"""
+************************************
+REJECTED NEWS SOURCES
+************************************
+
+Source: Hindustan Times
+
+    Questionable Reasoning: Pseudoscience, Propaganda, Poor Sourcing, Numerous Failed Fact Checks
+    Bias Rating: LEFT-CENTER
+    Factual Reporting: MIXED
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Newspaper
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: LOW CREDIBILITY
+
+Source: Economic Times
+
+    Reasoning: Numerous Failed Fact Checks, Fake News
+    Bias Rating: RIGHT-CENTER
+    Factual Reporting: MIXED
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Newspaper
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: LOW CREDIBILITY
+
+Source: The Indian Express
+
+    Bias Rating: LEFT-CENTER
+    Factual Reporting: MIXED
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Newspaper
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: MEDIUM CREDIBILITY
+
+Source: Times of India
+
+    Bias Rating: RIGHT-CENTER
+    Factual Reporting: MIXED
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Newspaper
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: MEDIUM CREDIBILITY
+
+************************************
+ACCEPTED Sources
+************************************
+
+Source: The Hindu
+
+    Bias Rating: LEFT-CENTER
+    Factual Reporting: MOSTLY FACTUAL
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Newspaper
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: HIGH CREDIBILITY
+
+Source: Business Standard
+
+    Bias Rating: RIGHT-CENTER
+    Factual Reporting: MOSTLY FACTUAL
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Newspaper
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: HIGH CREDIBILITY
+
+Source: India.com (india.com)
+
+    Bias Rating: RIGHT-CENTER
+    Factual Reporting: MOSTLY FACTUAL
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Website
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: HIGH CREDIBILITY
+
+Source: India TV
+
+    Bias Rating: RIGHT-CENTER
+    Factual Reporting: MOSTLY FACTUAL
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: TV Station
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: HIGH CREDIBILITY
+
+Source: Scroll.in
+
+    Bias Rating: LEFT-CENTER
+    Factual Reporting: MOSTLY FACTUAL
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Website
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: HIGH CREDIBILITY
+
+
+************************************
+Not Available Good Sources
+************************************
+
+Source: FirstPost
+
+    Bias Rating: RIGHT-CENTER
+    Factual Reporting: MOSTLY FACTUAL
+    Country: India
+    MBFC’s Country Freedom Rating: MODERATE FREEDOM
+    Media Type: Website
+    Traffic/Popularity: High Traffic
+    MBFC Credibility Rating: HIGH CREDIBILITY
+
+"""
 
 # Maximum number of API calls to make in a 15 minute burst
 MAX_CALLS = 25
@@ -21,7 +139,7 @@ MAX_CALLS = 25
 API_LIMIT = 200
 
 # Time Block to fetch articles from in minutes
-TIME_BLOCK = 120
+TIME_BLOCK = 360
 
 # Time difference between EST and news time in min
 # I use EST because datetime is timezone aware
@@ -63,6 +181,10 @@ def fetch_page(page: int) -> list:
     url = define_url(page)
     response = requests.get(url)
     data = json.loads(response.text)
+    if 'status' in data and data['status'] == 'error':
+        print(data['message'])
+        exit(1)
+
     articles = data['results']
     nextPage = data['nextPage']
     return articles, nextPage
