@@ -10,6 +10,12 @@ TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 
 class SentimentAnalyzer:
+    """
+    This class adds sentiment analysis to a list of articles.
+
+    :param __articles: A list of articles.
+    :param __model: The sentiment analysis model.
+    """
 
     def __init__(self,
         articles: List[dict],
@@ -88,7 +94,7 @@ def write_data(articles):
     with open(f'data/newsdataio/sentiment/{TODAY_DATE}.json', 'w') as f:
         json.dump(articles, f, indent=4)
 
-    print(f'Wrote {len(articles)} articles to cleaned.json')
+    print(f'Wrote {len(articles)} articles to sentiment.json')
 
 
 if __name__ == "__main__":

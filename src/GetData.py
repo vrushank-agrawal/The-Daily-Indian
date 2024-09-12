@@ -2,8 +2,7 @@ import os
 import requests
 import json
 from datetime import datetime, timedelta, timezone
-import time
-from typing import Tuple, Dict
+from typing import Dict
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -27,6 +26,12 @@ TIME_DIFF_MIN =  8 * 60 + 1440 # (hours * 60) + minutes
 
 
 class NewsArticles():
+    """
+    This class fetches articles from the NewsData.io API.
+
+    :param __articles: The articles fetched from the API
+    :param __start_time: The start time from when the articles were fetched
+    """
 
     def __init__(self, country: str = "in", lang: str = "en") -> None:
         self.__country = country
@@ -133,4 +138,6 @@ def write_to_file(articles: Dict[str, list]) -> None:
 
 
 if __name__ == '__main__':
-    NewsArticles().fetch_all()
+    news = NewsArticles()
+    news.fetch_all()
+    write_to_file(getattr(news, '_NewsArticles__articles'))

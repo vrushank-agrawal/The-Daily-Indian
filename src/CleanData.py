@@ -6,6 +6,12 @@ from typing import List
 TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 class DataCleaner:
+    """
+    This class cleans a list of articles.
+
+    :param __df: A list of articles.
+    :param __cols_to_clean: A list of columns to clean.
+    """
 
     def __init__(self,
         articles: List[dict],
@@ -37,18 +43,14 @@ class DataCleaner:
 
     def data_cleaner(self) -> None:
         """
-        This function cleans the data in the JSON file containing a list of news articles.
-
-        The function reads the JSON file, converts it into a pandas DataFrame, cleans the
-        columns and rows of the DataFrame, and writes the cleaned DataFrame back to the
-        JSON file.
+        This function cleans the data in the object df of news articles.
         """
 
         # If article is from The Hindu, set the category to that of keywords
         self.__set_the_hindu_keywords()
 
         # Convert 'category' column to string
-        self.__df['category'].apply(lambda x: x[0] if isinstance(x, list) else x)
+        self.__df['category'] = self.__df['category'].apply(lambda x: x[0])
 
         # Remove rows with no description
         self.__df = self.__df[self.__df['description'].notna()]
@@ -63,12 +65,9 @@ class DataCleaner:
         write_data(self.__df.to_dict('records'))
 
 
-def get_data():
+def get_data() -> list:
     """
     Reads a JSON file containing a list of articles and returns the list of articles.
-
-    Args:
-        path (str): The path to the JSON file.
 
     Returns:
         list: The list of articles.
@@ -92,5 +91,5 @@ def write_data(articles):
 
 
 if __name__ == '__main__':
-    from CreateNewsletter import cols
-    DataCleaner(get_data(), cols).data_cleaner()
+    from CreateNewsletter import cols_to_clean
+    DataCleaner(get_data(), cols_to_clean).data_cleaner()
