@@ -1,15 +1,28 @@
-# create an html email message looking newsletter
-
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import smtplib
 import os
-import datetime
 from dotenv import load_dotenv
 load_dotenv()
 
-from components import header, footer, section, styles, topNews
+import src.getData as getData, src.CleanData as CleanData, src.SentimentAnalyzer as SentimentAnalyzer
+
+def fetch_articles() -> list:
+    """
+
+    """
+
+    articles = getData.get_data_from_file()
+    articles = CleanData.clean_articles(articles)
+    articles = SentimentAnalyzer.append_sentiment_to_articles(articles)
+    return articles
+
+def create_newsletter() -> str:
+    """
+
+    """
+
 
 
 def send_newsletter():
