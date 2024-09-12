@@ -1,12 +1,7 @@
-from datetime import datetime
-
-def create_header():
+def create_header(date: str) -> str:
     """
     Create the header of the newsletter
     """
-    now = datetime.now()
-    # write the date in Weekday, Day Month format
-    date = now.strftime("%A, %d %B")
 
     header = f"""
         <header>

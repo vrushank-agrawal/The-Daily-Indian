@@ -10,7 +10,7 @@ def create_footer():
 
             <p>Send us your feedback at <a href="mailto:feedback@indiangospel.com">feedback@indiangospel.com</a></p>
 
-            <div class="container">
+            <div class="copyrights">
                 <p>New Delhi, Delhi, India &nbsp;
                 <p>Copyright © 2024, The Indian Gospel, All rights reserved.</p>
             </div>

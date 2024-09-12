@@ -11,13 +11,13 @@ def create_head() -> str:
                 color: #333;
                 margin: 30px auto;
                 padding: 30px 60px;
-                border-radius: 20px;
+                border-radius: 10px;
                 max-width: 780px;
             }}
 
             .container {{
                 max-width: 600px;
-                margin: 0 auto;
+                margin: 10px auto;
                 padding: 20px;
                 background-color: #fff;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -63,6 +63,12 @@ def create_head() -> str:
                 color: #fff;
                 text-decoration: none;
                 border-radius: 4px;
+            }}
+
+            .copyrights {{
+                text-align: center;
+                font-size: 12px;
+                margin-top: 20px;
             }}
 
             .button:hover {{
