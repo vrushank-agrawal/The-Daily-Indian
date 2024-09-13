@@ -4,6 +4,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from typing import Dict
 from dotenv import load_dotenv
+from Exceptions import APIError
 load_dotenv()
 
 # API args
@@ -30,6 +31,8 @@ class NewsArticles():
     This class fetches articles from the NewsData.io API.
 
     :param __articles: The articles fetched from the API
+    :rtype: dict
+
     :param __start_time: The start time from when the articles were fetched
     """
 
@@ -63,12 +66,16 @@ class NewsArticles():
         """ Fetch articles from a single page from the NewsData.io API. """
 
         url = self.__define_url()
-        response = requests.get(url)
+
+        try:
+            response = requests.get(url)
+        except Exception as e:
+            raise APIError(str(e))
+
         data = json.loads(response.text)
 
         if 'status' in data and data['status'] == 'error':
-            print(data['message'])
-            exit(1)
+            raise APIError(data["results"]["message"])
 
         self.__articles['articles'].extend(data['results']) if data['results'] else None
         self.__query_page = data['nextPage']

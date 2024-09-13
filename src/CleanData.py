@@ -36,7 +36,7 @@ class DataCleaner:
             return category_map.get(keyword, keyword)
 
         for index, article in self.__df.iterrows():
-            if article['source_name'] == 'The Hindu':
+            if article["source_name"] == 'The Hindu':
                 if article['category'] == ["top"]:
                     self.__df.at[index, 'category'] = [return_category(article['keywords'][0])]
 

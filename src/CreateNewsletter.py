@@ -42,20 +42,23 @@ from GetData import NewsArticles
 from CleanData import DataCleaner
 from SentimentAnalyzer import SentimentAnalyzer
 from FilterArticles import FilterArticles
-from components import newsletter
-import pandas as pd
+import NewsletterTemplate
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 import smtplib
+from datetime import datetime, timezone
 import os
+import json
 from dotenv import load_dotenv
 load_dotenv()
+
+TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 class NewsLetterHandler:
 
     def __init__(self) -> None:
-        pass
+        self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
 
     def __fetch_analyzed_data(self) -> None:
         """ Reads a JSON file containing a list of articles and returns the list of articles.
@@ -63,8 +66,9 @@ class NewsLetterHandler:
 
         articles = NewsArticles()
         articles.fetch_all()
+        articles = getattr(articles, '_NewsArticles__articles')['articles']
 
-        cleaned_articles = DataCleaner(getattr(articles, '_NewsArticles__articles'), cols_to_clean)
+        cleaned_articles = DataCleaner(articles, cols_to_clean)
         cleaned_articles.data_cleaner()
 
         df = getattr(cleaned_articles, '_DataCleaner__df')
@@ -83,9 +87,12 @@ class NewsLetterHandler:
         """ Create a newsletter from the sections data
         """
 
-        self.__fetch_analyzed_data()
-        self.__html = newsletter.newsletter_template(self.__date, self.__sections)
+        # self.__fetch_analyzed_data()
+        self.__sections = get_data()
+        self.__html = NewsletterTemplate.newsletter_template(self.__date, self.__sections)
         print("Newsletter created")
+
+        write_data(self.__html)
 
 
     def send_newsletter(self) -> None:
@@ -120,7 +127,33 @@ class NewsLetterHandler:
         print("Newsletter sent to {}".format(receiver_email))
 
 
+def write_data(html: str) -> None:
+    """
+    Writes a list of articles to the JSON file.
+
+    Args:
+        articles (list): The list of articles to write.
+    """
+    with open(f'data/newsdataio/newsletter/{TODAY_DATE}.html', 'w') as f:
+        # this is an html page with a string
+        f.write(html)
+
+    print(f'Wrote Newsletter to newsletter.html')
+
+
+def get_data() -> list:
+    """
+    Reads a JSON file containing a list of articles and returns the list of articles.
+
+    Returns:
+        list: The list of articles.
+    """
+    with open(f'data/newsdataio/filtered/{TODAY_DATE}.json', 'r') as f:
+        data = json.load(f)
+
+    return data
+
 if __name__ == "__main__":
     newsletter = NewsLetterHandler()
     newsletter.create_newsletter()
-    newsletter.send_newsletter()
+    # newsletter.send_newsletter()
