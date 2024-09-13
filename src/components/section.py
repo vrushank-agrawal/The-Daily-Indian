@@ -1,14 +1,30 @@
-from typing import List
+from typing import Dict, List
 
-def create_section(title, bullets: List[List[str]]) -> str:
+def combine_sections(sections: List[Dict[str, str]]) -> str:
+    """ Combine all bullets in correct format
     """
-    Create a section of the newsletter
+
+    links = ""
+    for section in sections:
+        link = f"""
+            <li>{section["title"]}.
+                <a href="{section["link"]}"> More here</a>
+            </li>
+        """
+        links += link
+
+    return links
+
+
+def create_section(title, bullets: List[Dict[str, str]]) -> str:
+    """ Create a section of the newsletter
     """
-    links = "\n".join([f'<li><a href="{link}">{text}</a></li>' for text, link in bullets])
+
+    links = combine_sections(bullets)
     section = f"""
-        <section>
-            <h2>{title}</h2>
-            <ul>
+        <section class="section">
+            <h2 class="section-title">{title}</h2>
+            <ul class="arrow">
                 {links}
             </ul>
         </section>

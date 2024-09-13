@@ -62,6 +62,8 @@ class FilterArticles:
         self.__sections = self.__get_top_three_articles()
         self.__sections.extend(self.__get_all_categories())
 
+        write_data(self.__sections)
+
 
 def get_data() -> list:
     """
@@ -95,6 +97,3 @@ if __name__ == "__main__":
     articles = get_data()
     filtered = FilterArticles(articles, cols_to_delete)
     filtered.get_articles()
-    write_data(
-        getattr(filtered, '_FilterArticles__sections')
-    )

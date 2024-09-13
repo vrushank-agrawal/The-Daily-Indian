@@ -5,7 +5,19 @@ def create_head() -> str:
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Newsletter</title>
         <style>
-            body {{
+
+            p {{
+                margin: 10px 0;
+            }}
+
+            hr {{
+                border: none;
+                border-top: 2px solid #ccc;
+                margin: 10px 0;
+                border-radius: 50px;
+            }}
+
+            .body-canvas {{
                 font-family: Arial, sans-serif;
                 background-color: beige;
                 color: #333;
@@ -23,37 +35,16 @@ def create_head() -> str:
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }}
 
-            h1 {{
-                text-align: center;
-                margin-top: 0;
-                font-size: 60px;
-            }}
-
-            p {{
-                margin: 10px 0;
-            }}
-
-            hr {{
-                border: none;
-                border-top: 2px solid #ccc;
-                margin: 10px 0;
-                border-radius: 50px;
-            }}
-
-            ul {{
-                padding-inline-start: 5px;
-                list-style-type: none;
-            }}
-
-            li::before {{
-                content: "\\2192";
-                padding-right: 8px;
-            }}
-
             .image {{
                 max-width: 100%;
                 height: auto;
                 margin-bottom: 20px;
+            }}
+
+            .section-title {{
+            }}
+
+            .section {{
             }}
 
             .button {{
@@ -65,14 +56,33 @@ def create_head() -> str:
                 border-radius: 4px;
             }}
 
-            .copyrights {{
+            .button:hover {{
+                background-color: #0069d9;
+            }}
+
+            header.header{{
+            }}
+
+            h1.title {{
+                text-align: center;
+                margin-top: 0;
+                font-size: 60px;
+            }}
+
+            ul.arrow {{
+                padding-inline-start: 5px;
+                list-style-type: none;
+            }}
+
+            ul.arrow li::before {{
+                content: "\\2192";
+                padding-right: 8px;
+            }}
+
+            footer .copyrights {{
                 text-align: center;
                 font-size: 12px;
                 margin-top: 20px;
-            }}
-
-            .button:hover {{
-                background-color: #0069d9;
             }}
 
         </style>

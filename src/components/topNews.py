@@ -1,27 +1,24 @@
-from typing import List
+from typing import Dict ,List
 
-def create_post(title, text) -> str:
+def create_posts(articles: List[Dict[str, str]]) -> str:
+    """ Create all post in correct format
     """
-    Create a post for the body of the newsletter.
-
-    :param title: The title of the post.
-    :type title: str
-
-    :param text: The text of the post.
-    :type text: str
-    """
-    post = f"""
-        <h3>{title}</h3>
-        {text}
-    """
-    return post
+    
+    html = ""
+    for article in articles:
+        title = article["title"]
+        text = article["text"]
+        html += f"""
+            <h3>{title}</h3>
+            {text}
+        """
+    return html
 
 
-def create_body(posts: List[List[str]]) -> str:
+def create_body(posts: List[Dict[str, str]]) -> str:
+    """ Create the top news section of the newsletter
     """
-    Create the body of the newsletter
-    """
-    posts = "\n".join([ "<hr>" + create_post(title, text) for title, text in posts])
+    posts = create_posts(posts)
     return f"""
     <div class="container">
         {posts}

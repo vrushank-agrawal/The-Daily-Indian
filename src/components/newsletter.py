@@ -1,9 +1,8 @@
 import header, footer, section, styles, topNews
 from typing import List, Dict
 
-def init_newsletter(
+def newsletter_template(
     date: str,
-    top_news: List[List[str]],
     sections_news: Dict[str, List[List[str]]]
 ) -> str:
     """
@@ -12,7 +11,8 @@ def init_newsletter(
 
     styles_string = styles.create_head()
     header_string = header.create_header(date) + "\n<hr>"
-    topNews_string = topNews.create_body(top_news) + "\n<hr>"
+    topNews_string = topNews.create_body(sections_news["top_news"]) + "\n<hr>"
+    sections_news.pop("top_news")
     section_string = "\n<hr>\n".join([section.create_section(key, value) for key, value in sections_news.items()]) + "\n<hr>"
     footer_string = footer.create_footer()
 
@@ -24,7 +24,7 @@ def init_newsletter(
 
         {styles_string}
 
-        <body>
+        <body class="body-canvas">
 
         {header_string}
 
@@ -39,5 +39,3 @@ def init_newsletter(
         </html>
     """
     return html
-
-init_newsletter()
