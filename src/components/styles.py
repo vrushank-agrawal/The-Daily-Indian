@@ -72,7 +72,7 @@ def create_head() -> str:
 
             .button {
                 background-color: #007bff;
-                color: #fff;
+                color: #fff !important;
                 display: inline-block;
                 font-size: 12px;
                 padding: 1px 6px;
@@ -99,13 +99,7 @@ def create_head() -> str:
             ul.arrow li {
                 position: relative;
                 margin-left: 20px; /* Add space to handle the arrow position */
-            }
-
-            ul.arrow li::before {
-                content: "\\2192";
-                position: absolute;
-                left: -20px; /* Position the arrow outside the margin */
-                padding-right: 8px; /* Space between arrow and text */
+                padding-left: 8px;
             }
 
             footer .copyrights {
