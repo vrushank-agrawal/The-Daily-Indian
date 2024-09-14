@@ -38,22 +38,24 @@ categories_to_get = [
     'sports',
 ]
 
+import NewsletterTemplate
 from GetData import NewsArticles
 from CleanData import DataCleaner
 from SentimentAnalyzer import SentimentAnalyzer
 from FilterArticles import FilterArticles
-import NewsletterTemplate
+
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-import smtplib
-from datetime import datetime, timezone
+
 import os
 import json
+from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 load_dotenv()
 
-TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+TODAY_DATE = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=-5))).strftime("%Y-%m-%d")
 
 class NewsLetterHandler:
 
@@ -89,6 +91,9 @@ class NewsLetterHandler:
 
         # self.__fetch_analyzed_data()
         self.__sections = get_data()
+
+        # generate_news_summary
+
         self.__html = NewsletterTemplate.newsletter_template(self.__date, self.__sections)
         print("Newsletter created")
 

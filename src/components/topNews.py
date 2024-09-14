@@ -3,12 +3,13 @@ from typing import Dict ,List
 def create_posts(articles: List[Dict[str, str]]) -> str:
     """ Create all post in correct format
     """
-    
+
     html = ""
     for article in articles:
         title = article["title"]
-        text = article["text"]
+        text = article["description"]
         html += f"""
+            <hr>
             <h3>{title}</h3>
             {text}
         """
@@ -20,7 +21,8 @@ def create_body(posts: List[Dict[str, str]]) -> str:
     """
     posts = create_posts(posts)
     return f"""
-    <div class="container">
+    <div class="container section-text m-bottom-30">
+        <h2 class="section-title">Top News</h2>
         {posts}
     </div>
     """

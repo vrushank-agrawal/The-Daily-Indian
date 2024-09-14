@@ -4,7 +4,7 @@ def create_footer():
     Create the footer of the newsletter
     """
     footer = """
-        <footer>
+        <footer class="section-text">
             <p><strong>Why the Indian Gospel?</strong> Gospel is used to deliver good news. </p>
             <p>With this newsletter, we are providing you with the latest news to uplift your day.</p>
 

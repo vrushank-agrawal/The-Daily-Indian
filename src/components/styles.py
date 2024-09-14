@@ -6,84 +6,114 @@ def create_head() -> str:
         <title>Newsletter</title>
         <style>
 
-            p {{
+            p {
                 margin: 10px 0;
-            }}
+            }
 
-            hr {{
+            hr {
                 border: none;
-                border-top: 2px solid #ccc;
-                margin: 10px 0;
-                border-radius: 50px;
-            }}
+                border-top: 2px solid #000000;
+                margin: 1em 0;
+            }
 
-            .body-canvas {{
-                font-family: Arial, sans-serif;
-                background-color: beige;
-                color: #333;
-                margin: 30px auto;
-                padding: 30px 60px;
-                border-radius: 10px;
-                max-width: 780px;
-            }}
+            .body-canvas {
+                font-family: Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
+                background-color: white;
+                color: #000000;
+                max-width: 100%;
+            }
 
-            .container {{
+            .container {
                 max-width: 600px;
                 margin: 10px auto;
                 padding: 20px;
-                background-color: #fff;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }}
+            }
 
-            .image {{
+            .image {
                 max-width: 100%;
                 height: auto;
                 margin-bottom: 20px;
-            }}
+            }
 
-            .section-title {{
-            }}
+            .m-top-5 {
+                margin-top: 5px !important;
+            }
 
-            .section {{
-            }}
+            .m-top-10 {
+                margin-top: 10px !important;
+            }
 
-            .button {{
+            .m-top-30 {
+                margin-top: 30px !important;
+            }
+
+            .m-bottom-30 {
+                margin-bottom: 30px !important;
+            }
+
+            .section-title {
+                background-color: lightgreen;
                 display: inline-block;
-                padding: 10px 20px;
+                margin: 0;
+                margin-top: 10px;
+                padding: 10px;
+                word-wrap: break-word;
+            }
+
+            .section-text {
+                background-color: whitesmoke;
+                letter-spacing: normal;
+                line-height: 27px;
+                margin: auto;
+                margin-top: 20px;
+                max-width: 600px;
+                padding: 10px 20px 30px;
+            }
+
+            .button {
                 background-color: #007bff;
                 color: #fff;
+                display: inline-block;
+                font-size: 12px;
+                padding: 1px 6px;
                 text-decoration: none;
-                border-radius: 4px;
-            }}
+            }
 
-            .button:hover {{
+            .button:hover {
                 background-color: #0069d9;
-            }}
+            }
 
-            header.header{{
-            }}
+            header.header{
+            }
 
-            h1.title {{
+            h1.title {
                 text-align: center;
-                margin-top: 0;
                 font-size: 60px;
-            }}
+            }
 
-            ul.arrow {{
+            ul.arrow {
                 padding-inline-start: 5px;
                 list-style-type: none;
-            }}
+            }
 
-            ul.arrow li::before {{
+            ul.arrow li {
+                position: relative;
+                margin-left: 20px; /* Add space to handle the arrow position */
+            }
+
+            ul.arrow li::before {
                 content: "\\2192";
-                padding-right: 8px;
-            }}
+                position: absolute;
+                left: -20px; /* Position the arrow outside the margin */
+                padding-right: 8px; /* Space between arrow and text */
+            }
 
-            footer .copyrights {{
+            footer .copyrights {
                 text-align: center;
                 font-size: 12px;
-                margin-top: 20px;
-            }}
+                margin-top: 30px;
+                line-height: 12px;
+            }
 
         </style>
     </head>

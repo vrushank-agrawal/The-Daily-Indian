@@ -7,8 +7,8 @@ def combine_sections(sections: List[Dict[str, str]]) -> str:
     links = ""
     for section in sections:
         link = f"""
-            <li>{section["title"]}.
-                <a href="{section["link"]}"> More here</a>
+            <li class="m-top-10">{section["title"]}.
+                <a class="button" href="{section["link"]}"> More here</a>
             </li>
         """
         links += link
@@ -22,8 +22,9 @@ def create_section(title, bullets: List[Dict[str, str]]) -> str:
 
     links = combine_sections(bullets)
     section = f"""
-        <section class="section">
-            <h2 class="section-title">{title}</h2>
+        <section class="section-text m-top-5">
+            <h2 class="section-title">{title.title()}</h2>
+            <hr>
             <ul class="arrow">
                 {links}
             </ul>

@@ -17,7 +17,6 @@ def transform_section_to_single_dict(sections: List[Dict[str, List[Dict[str, str
     return dic_
 
 
-
 def newsletter_template(
     date: str,
     sections_news: List[Dict[str, List[List[str]]]]
@@ -28,10 +27,10 @@ def newsletter_template(
 
     sections_news = transform_section_to_single_dict(sections_news)
     styles_string = styles.create_head()
-    header_string = header.create_header(date) + "\n<hr>"
-    topNews_string = topNews.create_body(sections_news["top_articles"]) + "\n<hr>"
+    header_string = header.create_header(date)
+    topNews_string = topNews.create_body(sections_news["top_articles"])
     sections_news.pop("top_articles")
-    section_string = "\n<hr>\n".join([section.create_section(key, value) for key, value in sections_news.items()]) + "\n<hr>"
+    section_string = "".join([section.create_section(key, value) for key, value in sections_news.items()])
     footer_string = footer.create_footer()
 
     # <<! <img src="cid:image1" alt="Indian Gospel" width="150" height="150"> >>
