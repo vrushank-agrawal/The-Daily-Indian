@@ -63,7 +63,7 @@ def create_head() -> str:
             .section-text {
                 background-color: whitesmoke;
                 letter-spacing: normal;
-                line-height: 27px;
+                line-height: 22px;
                 margin: auto;
                 margin-top: 20px;
                 max-width: 600px;
@@ -75,7 +75,7 @@ def create_head() -> str:
                 color: #fff !important;
                 display: inline-block;
                 font-size: 12px;
-                padding: 1px 6px;
+                padding: 0px 6px;
                 text-decoration: none;
             }
 
@@ -92,14 +92,14 @@ def create_head() -> str:
             }
 
             ul.arrow {
-                padding-inline-start: 5px;
                 list-style-type: none;
+                padding-left: 0px;
             }
 
             ul.arrow li {
                 position: relative;
-                margin-left: 20px; /* Add space to handle the arrow position */
-                padding-left: 8px;
+                margin-left: 0px;
+                padding-left: 2px;
             }
 
             footer .copyrights {

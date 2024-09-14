@@ -8,7 +8,7 @@ def combine_sections(sections: List[Dict[str, str]]) -> str:
     for section in sections:
         link = f"""
             <li class="m-top-10">&#8594; {section["title"]}.
-                <a class="button" href="{section["link"]}"> More here</a>
+                <a href="{section["link"]}"> More here</a>
             </li>
         """
         links += link
