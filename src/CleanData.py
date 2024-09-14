@@ -1,9 +1,6 @@
-import json
 import pandas as pd
-from datetime import datetime, timezone
+from ReadWriteIO import get_data, write_data
 from typing import List
-
-TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 class DataCleaner:
     """
@@ -62,34 +59,9 @@ class DataCleaner:
         self.__df.reset_index(drop=True, inplace=True)
 
         # Write the cleaned data to the JSON file
-        write_data(self.__df.to_dict('records'))
-
-
-def get_data() -> list:
-    """
-    Reads a JSON file containing a list of articles and returns the list of articles.
-
-    Returns:
-        list: The list of articles.
-    """
-    with open(f'data/newsdataio/articles/{TODAY_DATE}.json', 'r') as f:
-        data = json.load(f)
-
-    # Extract the list of articles from the JSON data.
-    return data['articles']
-
-
-def write_data(articles):
-    """
-    Writes a list of articles to the JSON file.
-
-    Args:
-        articles (list): The list of articles to write.
-    """
-    with open(f'data/newsdataio/cleaned/{TODAY_DATE}.json', 'w') as f:
-        json.dump(articles, f, indent=4)
+        write_data(self.__df.to_dict('records'), 'cleaned')
 
 
 if __name__ == '__main__':
     from CreateNewsletter import cols_to_clean
-    DataCleaner(get_data(), cols_to_clean).data_cleaner()
+    DataCleaner(get_data('articles'), cols_to_clean).data_cleaner()

@@ -1,9 +1,6 @@
 import pandas as pd
 from typing import List, Dict
-from datetime import datetime, timezone
-import json
-
-TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+from ReadWriteIO import get_data, write_data
 
 class FilterArticles:
     """ This class filters and selects the articles to be sent in the newsletter.
@@ -56,44 +53,17 @@ class FilterArticles:
         return [ { "top_articles" : top_articles } ]
 
 
-    def get_articles(self) -> None:
+    def filter_articles(self) -> None:
         """ Sets the list of articles.
         """
         self.__sections = self.__get_top_three_articles()
         self.__sections.extend(self.__get_all_categories())
 
-        write_data(self.__sections)
-
-
-def get_data() -> list:
-    """
-    Reads a JSON file containing a list of articles and returns the list of articles.
-
-    Returns:
-        list: The list of articles.
-    """
-    with open(f'data/newsdataio/sentiment/{TODAY_DATE}.json', 'r') as f:
-        data = json.load(f)
-
-    # Extract the list of articles from the JSON data.
-    return data
-
-
-def write_data(sections):
-    """
-    Writes a list of articles to the JSON file.
-
-    Args:
-        articles (list): The list of articles to write.
-    """
-    with open(f'data/newsdataio/filtered/{TODAY_DATE}.json', 'w') as f:
-        json.dump(sections, f, indent=4)
-
-    print(f'Wrote articles to filtered.json')
+        write_data(self.__sections, 'filtered')
 
 
 if __name__ == "__main__":
     from CreateNewsletter import cols_to_delete
-    articles = get_data()
+    articles = get_data('sentiment')
     filtered = FilterArticles(articles, cols_to_delete)
-    filtered.get_articles()
+    filtered.filter_articles()
