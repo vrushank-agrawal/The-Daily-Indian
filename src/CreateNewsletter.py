@@ -97,7 +97,7 @@ class NewsLetterHandler:
         self.__html = NewsletterTemplate.newsletter_template(self.__date, self.__sections)
         print("Newsletter created")
 
-        write_data(self.__html)
+        # write_data(self.__html)
 
 
     def send_newsletter(self) -> None:
@@ -161,4 +161,4 @@ def get_data() -> list:
 if __name__ == "__main__":
     newsletter = NewsLetterHandler()
     newsletter.create_newsletter()
-    # newsletter.send_newsletter()
+    newsletter.send_newsletter()
