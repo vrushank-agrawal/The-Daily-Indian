@@ -21,7 +21,7 @@ def create_body(posts: List[Dict[str, str]]) -> str:
     """
     posts = create_posts(posts)
     return f"""
-    <div class="container section-text m-bottom-30">
+    <div class="container section-text m-bottom-10">
         <h2 class="section-title">Top News</h2>
         {posts}
     </div>

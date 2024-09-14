@@ -43,7 +43,7 @@ class NewsArticles():
         self.__query_page = 0
         self.__start_time = datetime.now() - timedelta(minutes=TIME_DIFF_MIN)
         self.__articles = {"articles": [],}
-        print("Start time: ", self.__start_time)
+        print("End time: ", self.__start_time)
 
     def __define_url(self) -> str:
         """ Return a URL to query the NewsData.io API for articles. """
@@ -103,7 +103,7 @@ class NewsArticles():
 
             # If publication time > than current time, we've exhausted articles
             if last_fetched_article_time < self.__start_time:
-                print(f'Fetched all articles for {TIME_BLOCK} minutes after {self.__start_time}')
+                print(f'Fetched all articles for {TIME_BLOCK} minutes before {self.__start_time}')
                 return True
 
         return False
@@ -119,8 +119,8 @@ class NewsArticles():
         api1 = os.getenv("NEWSDATAIO_API_KEY")
         api2 = os.getenv("NEWSDATAIO_API_KEY_2")
 
-        for api in [api1, api2]:
-            print(f'Using API key: {api}')
+        for i, api in enumerate([api1, api2]):
+            print(f'Using API key: {i+1}')
             self.__api_key = api
             all_fetched = self.__fetch_block()
             if all_fetched:

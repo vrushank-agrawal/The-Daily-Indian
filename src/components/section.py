@@ -22,7 +22,7 @@ def create_section(title, bullets: List[Dict[str, str]]) -> str:
 
     links = combine_sections(bullets)
     section = f"""
-        <section class="section-text m-top-5">
+        <section class="section-text m-top-2">
             <h2 class="section-title">{title.title()}</h2>
             <hr>
             <ul class="arrow">

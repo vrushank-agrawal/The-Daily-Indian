@@ -35,8 +35,8 @@ def create_head() -> str:
                 margin-bottom: 20px;
             }
 
-            .m-top-5 {
-                margin-top: 5px !important;
+            .m-top-2 {
+                margin-top: 2px !important;
             }
 
             .m-top-10 {
@@ -47,8 +47,8 @@ def create_head() -> str:
                 margin-top: 30px !important;
             }
 
-            .m-bottom-30 {
-                margin-bottom: 30px !important;
+            .m-bottom-10 {
+                margin-bottom: 10px !important;
             }
 
             .section-title {
@@ -65,7 +65,7 @@ def create_head() -> str:
                 letter-spacing: normal;
                 line-height: 22px;
                 margin: auto;
-                margin-top: 20px;
+                margin-top: 10px;
                 max-width: 600px;
                 padding: 10px 20px 30px;
             }

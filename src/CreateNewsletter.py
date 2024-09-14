@@ -55,7 +55,7 @@ from datetime import datetime, timezone, timedelta
 from dotenv import load_dotenv
 load_dotenv()
 
-TODAY_DATE = datetime.now(timezone.utc).astimezone(timezone(timedelta(hours=-5))).strftime("%Y-%m-%d")
+TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 class NewsLetterHandler:
 
@@ -89,15 +89,15 @@ class NewsLetterHandler:
         """ Create a newsletter from the sections data
         """
 
-        # self.__fetch_analyzed_data()
-        self.__sections = get_data()
+        self.__fetch_analyzed_data()
+        # self.__sections = get_data()
 
         # generate_news_summary
 
         self.__html = NewsletterTemplate.newsletter_template(self.__date, self.__sections)
         print("Newsletter created")
 
-        # write_data(self.__html)
+        write_data(self.__html)
 
 
     def send_newsletter(self) -> None:
@@ -140,7 +140,6 @@ def write_data(html: str) -> None:
         articles (list): The list of articles to write.
     """
     with open(f'data/newsdataio/newsletter/{TODAY_DATE}.html', 'w') as f:
-        # this is an html page with a string
         f.write(html)
 
     print(f'Wrote Newsletter to newsletter.html')
