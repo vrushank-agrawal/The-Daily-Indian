@@ -118,8 +118,11 @@ class NewsArticles():
 
         api1 = os.getenv("NEWSDATAIO_API_KEY")
         api2 = os.getenv("NEWSDATAIO_API_KEY_2")
+        api3 = os.getenv("NEWSDATAIO_API_KEY_3")
+        api4 = os.getenv("NEWSDATAIO_API_KEY_4")
+        api5 = os.getenv("NEWSDATAIO_API_KEY_5")
 
-        for i, api in enumerate([api1, api2]):
+        for i, api in enumerate([api1, api2, api3, api4, api5]):
             print(f'Using API key: {i+1}')
             self.__api_key = api
             all_fetched = self.__fetch_block()
