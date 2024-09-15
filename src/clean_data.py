@@ -1,5 +1,5 @@
 import pandas as pd
-from ReadWriteIO import get_data, write_data
+from utils.read_write_IO import get_data, write_data
 from typing import List
 
 class DataCleaner:
@@ -18,23 +18,25 @@ class DataCleaner:
         self.__cols_to_clean = cols_to_clean
 
     def __set_the_hindu_keywords(self) -> None:
-        """
-        Sets the value of the category to that of keywords if the article is from the The Hindu.
+        """ Sets the value of the category to that of
+            keywords if the article is from the The Hindu.
         """
 
         def return_category(keyword: str) -> str:
-            """Maps The Hindu's keywords to a more general category."""
+            """ Maps The Hindu's keywords to a more general category """
+
             category_map = {
                 # "markets": "business",    # Markets not to be included
                 "industry": "business",
                 "movies": "entertainment",
                 "india": "politics",
-                "gadgets": "technology",
-                "science": "technology",
                 "other sports": "sports",
                 "cricket": "sports",
                 "hockey": "sports",
                 "football": "sports",
+                "gadgets": "technology",
+                "science": "technology",
+                "world": "world",
             }
             return category_map.get(keyword, "top")
 
@@ -44,33 +46,46 @@ class DataCleaner:
                     self.__df.at[index, 'category'] = [return_category(article['keywords'][0])]
 
 
-    def data_cleaner(self) -> None:
+    def __convert_category_to_string(self) -> None:
+        """ Converts the category column to string.
         """
-        This function cleans the data in the object df of news articles.
-        """
-
-        # If article is from The Hindu, set the category to that of keywords
-        self.__set_the_hindu_keywords()
-
-        # Convert 'category' column to string
         self.__df['category'] = self.__df['category'].apply(lambda x: x[0])
 
+
+    def __remove_nulls(self) -> None:
+        """ Removes all rows with null values.
+        """
         # Remove rows with no description
         self.__df = self.__df[self.__df['description'].notna()]
 
         # Remove rows with no title
         self.__df = self.__df[self.__df['title'].notna()]
 
-        # Drop columns to clean
-        self.__df.drop(columns=self.__cols_to_clean, inplace=True)
 
-        # Reset index
+    def __drop_cols(self) -> None:
+        """ Drops the specified columns from the dataframe.
+        """
+        self.__df.drop(self.__cols_to_clean, axis=1, inplace=True)
+
+
+    def run(self) -> None:
+        """ The entry function. Calls all other functions and
+            cleans the data in the object df of news articles.
+        """
+
+        self.__set_the_hindu_keywords()
+
+        self.__convert_category_to_string()
+
+        self.__remove_nulls()
+
+        self.__drop_cols()
+
         self.__df.reset_index(drop=True, inplace=True)
 
-        # Write the cleaned data to the JSON file
         write_data(self.__df.to_dict('records'), 'cleaned')
 
 
 if __name__ == '__main__':
-    from CreateNewsletter import cols_to_clean
-    DataCleaner(get_data('articles'), cols_to_clean).data_cleaner()
+    from utils.constants import COLS_TO_CLEAN
+    DataCleaner(get_data('articles'), COLS_TO_CLEAN).run()

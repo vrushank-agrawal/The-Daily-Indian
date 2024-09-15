@@ -3,28 +3,10 @@ import requests
 import json
 from datetime import datetime, timedelta, timezone
 from typing import Dict
+from utils.exceptions import APIError
+from utils.constants import START_TIME_DELAY, TIME_WINDOW, MAX_CALLS_PER_15_MIN, INCLUDE_DOMAINS
 from dotenv import load_dotenv
-from Exceptions import APIError
 load_dotenv()
-
-# API args
-API_KEY = os.getenv("NEWSDATAIO_API_KEY")
-EXCLUDE_DOMAINS = "theweek.in,washingtontimes.com,firstpost.com"
-INCLUDE_DOMAINS = "business-standard.com,thehindu.com,indiatvnews.com,zeenews.india.com"
-
-# Maximum number of API calls to make in a 15 minute burst
-MAX_CALLS = 30
-
-# Number of API calls made in a day
-API_LIMIT = 200
-
-# Time Block to fetch articles from in minutes
-TIME_BLOCK = 1440
-
-# Time difference between EST and news time in min
-# The news is data is 12 hours behind UTC
-# I use EST because datetime is timezone aware
-TIME_DIFF_MIN =  8 * 60 + TIME_BLOCK # (hours * 60) + TIME_BLOCK in minutes
 
 
 class NewsArticles():
@@ -40,9 +22,8 @@ class NewsArticles():
     def __init__(self, country: str = "in", lang: str = "en") -> None:
         self.__country = country
         self.__lang = lang
-        self.__api_key = API_KEY
         self.__query_page = 0
-        self.__start_time = datetime.now() - timedelta(minutes=TIME_DIFF_MIN)
+        self.__start_time = datetime.now() - timedelta(minutes=START_TIME_DELAY)
         self.__articles = {"articles": [],}
         print("Start time: ", self.__start_time)
 
@@ -93,7 +74,7 @@ class NewsArticles():
 
         calls = 0
 
-        while calls < MAX_CALLS:
+        while calls < MAX_CALLS_PER_15_MIN:
             calls += 1
             self.__extend_page()
 
@@ -104,12 +85,12 @@ class NewsArticles():
 
             # If publication time > than current time, we've exhausted articles
             if last_fetched_article_time < self.__start_time:
-                print(f'Fetched all articles for {TIME_BLOCK} minutes before {self.__start_time}')
+                print(f'Fetched all articles for {TIME_WINDOW} minutes before {self.__start_time}')
                 return True
 
         return False
 
-    def fetch_all(self) -> None:
+    def run(self) -> None:
         """
         Fetches all articles from the NewsData.io API.
 
@@ -150,5 +131,5 @@ def write_to_file(articles: Dict[str, list]) -> None:
 
 if __name__ == '__main__':
     news = NewsArticles()
-    news.fetch_all()
+    news.run()
     write_to_file(getattr(news, '_NewsArticles__articles'))

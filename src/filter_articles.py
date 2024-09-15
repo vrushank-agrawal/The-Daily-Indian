@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import List, Dict
-from ReadWriteIO import get_data, write_data
+from utils.read_write_IO import get_data, write_data
 
 class FilterArticles:
     """ This class filters and selects the articles to be sent in the newsletter.
@@ -12,7 +12,7 @@ class FilterArticles:
     def __init__(self,
         articles: List[dict],
         cols_to_drop: List[str],
-        categories_to_get: List[str] = ['business', 'politics', 'entertainment', 'sports', 'world']
+        categories_to_get: List[str],
     ) -> None:
         self.__articles = articles
         self.__df = pd.DataFrame(articles)
@@ -100,7 +100,7 @@ class FilterArticles:
         return [ { "top_articles" : top_articles } ]
 
 
-    def filter_articles(self) -> None:
+    def run(self) -> None:
         """ Sets the list of articles.
         """
 
@@ -118,7 +118,7 @@ class FilterArticles:
 
 
 if __name__ == "__main__":
-    from CreateNewsletter import cols_to_delete
+    from utils.constants import COLS_TO_FILTER, DISPLAY_CATEGORIES
     articles = get_data('sentiment')
-    filtered = FilterArticles(articles, cols_to_delete)
-    filtered.filter_articles()
+    filtered = FilterArticles(articles, COLS_TO_FILTER, DISPLAY_CATEGORIES)
+    filtered.run()

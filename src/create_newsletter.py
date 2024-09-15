@@ -1,49 +1,10 @@
-# Columns to clean from the raw API data
-cols_to_clean = [
-    'ai_tag',
-    'ai_region',
-    'ai_org',
-    'article_id',
-    'content',
-    'country',
-    'creator',
-    'image_url',
-    'keywords',
-    'language',
-    'pubDateTZ',
-    'sentiment_stats',
-    'source_icon',
-    'source_id',
-    'source_priority',
-    'source_url',
-    'video_url',
-]
-
-# Columns to remove from the dataframe after analysis
-cols_to_delete = [
-    'category',
-    'duplicate',
-    'pubDate',
-    'sentiment',
-    'sentiment_score',
-    # 'source_name',
-]
-
-# Categories to get 3 articles each from
-categories_to_get = [
-    'business',
-    'entertainment',
-    'politics',
-    'science',
-    'sports',
-]
-
-import NewsletterTemplate
-from GetDataFromAPI import NewsArticles
-from CleanData import DataCleaner
-from SentimentAnalyzer import SentimentAnalyzer
-from FilterArticles import FilterArticles
-from ReadWriteIO import get_data
+import newsletter_template as newsletter_template
+from get_data_from_API import NewsArticles
+from clean_data import DataCleaner
+from sentiment_analyzer import SentimentAnalyzer
+from filter_articles import FilterArticles
+from utils.read_write_IO import get_data
+from utils.constants import COLS_TO_CLEAN, COLS_TO_FILTER, DISPLAY_CATEGORIES
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -61,6 +22,8 @@ class NewsLetterHandler:
 
     def __init__(self) -> None:
         self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
+        self.__sections = []
+        self.__html = ''
 
     def __fetch_analyzed_data(self) -> None:
         """ Reads a JSON file containing a list of articles and returns the list of articles.
@@ -68,23 +31,23 @@ class NewsLetterHandler:
 
         # Get data from API
         articles = NewsArticles()
-        articles.fetch_all()
+        articles.run()
         articles = getattr(articles, '_NewsArticles__articles')['articles']
 
         # Clean data
-        cleaned_articles = DataCleaner(articles, cols_to_clean)
-        cleaned_articles.data_cleaner()
-        df = getattr(cleaned_articles, '_DataCleaner__df')
+        cleaner = DataCleaner(articles, COLS_TO_CLEAN)
+        cleaner.run()
+        df = getattr(cleaner, '_DataCleaner__df')
 
         # Analyze sentiment
         sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'))
-        sentiment_analyzer.run_sentiment_analyzer()
+        sentiment_analyzer.run()
         analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
 
         # Filter articles
-        filtered_articles = FilterArticles(analyzed_articles, cols_to_delete, categories_to_get)
-        filtered_articles.filter_articles()
-        self.__sections = getattr(filtered_articles, '_FilterArticles__sections')
+        filterer = FilterArticles(analyzed_articles, COLS_TO_FILTER, DISPLAY_CATEGORIES)
+        filterer.run()
+        self.__sections = getattr(filterer, '_FilterArticles__sections')
 
 
     def create_newsletter(self) -> str:
@@ -96,10 +59,10 @@ class NewsLetterHandler:
 
         # generate_news_summary
 
-        self.__html = NewsletterTemplate.newsletter_template(self.__date, self.__sections)
-        print("Newsletter created")
+        # self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
+        # print("Newsletter created")
 
-        write_html(self.__html)
+        # write_html(self.__html)
 
 
     def send_newsletter(self) -> None:
@@ -150,4 +113,4 @@ def write_html(html: str) -> None:
 if __name__ == "__main__":
     newsletter = NewsLetterHandler()
     newsletter.create_newsletter()
-    newsletter.send_newsletter()
+    # newsletter.send_newsletter()

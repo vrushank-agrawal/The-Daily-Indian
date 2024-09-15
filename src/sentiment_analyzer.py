@@ -1,6 +1,6 @@
 from transformers import pipeline
 from typing import List
-from ReadWriteIO import get_data, write_data
+from utils.read_write_IO import get_data, write_data
 
 # Load the sentiment analysis model
 DEFAULT_MODEL = "ProsusAI/finbert"
@@ -21,7 +21,7 @@ class SentimentAnalyzer:
         self.__model = model
 
 
-    def run_sentiment_analyzer(self) -> None:
+    def run(self) -> None:
         """
         Adds sentiment analysis to a list of articles.
 
@@ -58,4 +58,4 @@ class SentimentAnalyzer:
 
 if __name__ == "__main__":
     articles = get_data('cleaned')
-    SentimentAnalyzer(articles).run_sentiment_analyzer()
+    SentimentAnalyzer(articles).run()

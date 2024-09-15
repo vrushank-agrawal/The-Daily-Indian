@@ -1,4 +1,4 @@
-from components import header, footer, section, styles, topNews
+from components import header, footer, section, styles, top_news
 from typing import List, Dict
 
 def transform_section_to_single_dict(sections: List[Dict[str, List[Dict[str, str]]]]) -> Dict[str, List[List[Dict[str, str]]]]:
@@ -28,7 +28,7 @@ def newsletter_template(
     sections_news = transform_section_to_single_dict(sections_news)
     styles_string = styles.create_head()
     header_string = header.create_header(date)
-    topNews_string = topNews.create_body(sections_news["top_articles"])
+    topNews_string = top_news.create_body(sections_news["top_articles"])
     sections_news.pop("top_articles")
     section_string = "".join([section.create_section(key, value) for key, value in sections_news.items()])
     footer_string = footer.create_footer()
