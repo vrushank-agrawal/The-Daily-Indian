@@ -1,6 +1,6 @@
 newsapi-python
 python-dotenv
-google-generativeai
+sentence-transformers
 pandas
 transformers
 torch

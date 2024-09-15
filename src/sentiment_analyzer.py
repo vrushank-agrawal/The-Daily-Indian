@@ -18,7 +18,11 @@ class SentimentAnalyzer:
         model: str = DEFAULT_MODEL,
     ) -> None:
         self.__articles = articles
-        self.__model = model
+        self.__model = pipeline(
+            "sentiment-analysis",
+            model=model,
+            tokenizer=model
+        )
 
 
     def run(self) -> None:
@@ -29,23 +33,16 @@ class SentimentAnalyzer:
         to each article dictionary.
         """
 
-        # Load the sentiment analysis pipeline
-        sentiment_pipeline = pipeline(
-            "sentiment-analysis",
-            model=self.__model,
-            tokenizer=self.__model
-        )
-
         # Iterate over the articles
         for article in self.__articles:
 
             # Analyze the sentiment of the article title
             title_input = article['title'] if len(article['title']) < 511 else article['title'][:511]
-            title_result = sentiment_pipeline(title_input)
+            title_result = self.__model(title_input)
 
             # Analyze the sentiment of the article description
             description_input = article['description'] if len(article['description']) < 511 else article['description'][:511]
-            description_result = sentiment_pipeline(description_input)
+            description_result = self.__model(description_input)
 
             article['sentiment'] = (title_result[0]['label'], description_result[0]['label'])
             article['sentiment_score'] = (title_result[0]['score'], description_result[0]['score'])

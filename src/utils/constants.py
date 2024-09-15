@@ -1,3 +1,11 @@
+# Model for sentiment analysis
+MODEL_SENTIMENT_ANALYSIS = "ProsusAI/finbert"
+
+
+# Model for sentence similarity
+MODEL_SENTENCE_SIMILARITY = "sentence-transformers/all-mpnet-base-v2"
+
+
 # Maximum number of API calls to make in a 15 minute window
 MAX_CALLS_PER_15_MIN = 30
 

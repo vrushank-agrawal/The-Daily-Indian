@@ -111,7 +111,7 @@ class FilterArticles:
         return [ { "top_articles" : top_articles } ]
 
 
-    def run(self) -> None:
+    def run_after_sentiment(self) -> None:
         """ Sets the list of articles.
         """
 
@@ -130,8 +130,20 @@ class FilterArticles:
         write_data(self.__sections, 'filtered')
 
 
+    def run_after_sentence_similarity(self) -> None:
+        """ Sets the list of articles.
+        """
+
+        self.__select_one_from_similar_articles()
+
+        self.__remove_other_similar_articles()
+
+        self.__sections = self.__df.to_dict('records')
+        write_data(self.__sections, 'sentence')
+
+
 if __name__ == "__main__":
     from utils.constants import COLS_TO_FILTER, DISPLAY_CATEGORIES
     articles = get_data('sentiment')
     filtered = FilterArticles(articles, COLS_TO_FILTER, DISPLAY_CATEGORIES)
-    filtered.run()
+    filtered.run_after_sentiment()

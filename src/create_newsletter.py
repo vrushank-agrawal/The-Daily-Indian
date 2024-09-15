@@ -2,9 +2,11 @@ import newsletter_template as newsletter_template
 from get_data_from_API import NewsArticles
 from clean_data import DataCleaner
 from sentiment_analyzer import SentimentAnalyzer
+from sentence_similarity import SentenceSimilarity
 from filter_articles import FilterArticles
 from utils.read_write_IO import get_data
 from utils.constants import COLS_TO_CLEAN, COLS_TO_FILTER, DISPLAY_CATEGORIES
+from utils.constants import MODEL_SENTIMENT_ANALYSIS, MODEL_SENTENCE_SIMILARITY
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -40,14 +42,19 @@ class NewsLetterHandler:
         df = getattr(cleaner, '_DataCleaner__df')
 
         # Analyze sentiment
-        sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'))
+        sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'), MODEL_SENTIMENT_ANALYSIS)
         sentiment_analyzer.run()
         analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
 
         # Filter articles
         filterer = FilterArticles(analyzed_articles, COLS_TO_FILTER, DISPLAY_CATEGORIES)
-        filterer.run()
+        filterer.run_after_sentiment()
         self.__sections = getattr(filterer, '_FilterArticles__sections')
+
+        # Sentence similarity
+        sentence_similarity = SentenceSimilarity(df.to_dict('records'), MODEL_SENTENCE_SIMILARITY)
+        sentence_similarity.run()
+        self.__sections = getattr(sentence_similarity, '_SentenceSimilarity__sections')
 
 
     def create_newsletter(self) -> str:
