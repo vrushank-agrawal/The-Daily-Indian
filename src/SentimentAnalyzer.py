@@ -3,7 +3,7 @@ from typing import List
 from ReadWriteIO import get_data, write_data
 
 # Load the sentiment analysis model
-MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
+DEFAULT_MODEL = "ProsusAI/finbert"
 
 class SentimentAnalyzer:
     """
@@ -15,7 +15,7 @@ class SentimentAnalyzer:
 
     def __init__(self,
         articles: List[dict],
-        model: str = MODEL,
+        model: str = DEFAULT_MODEL,
     ) -> None:
         self.__articles = articles
         self.__model = model
@@ -36,28 +36,22 @@ class SentimentAnalyzer:
             tokenizer=self.__model
         )
 
-        # Initialize the counter for the number of articles analyzed
-        articles_analyzed = 0
-
         # Iterate over the articles
         for article in self.__articles:
-            # If the article has no description, skip it
-            if not article['description']:
-                article['sentiment'] = ""
-                article['sentiment_score'] = ""
-                continue
 
-            # If the article description is too long, truncate it
-            desc = article['description'][:511] if len(article['description']) > 511 else article['description']
+            # Analyze the sentiment of the article title
+            title_input = article['title'] if len(article['title']) < 511 else article['title'][:511]
+            title_result = sentiment_pipeline(title_input)
 
-            # Analyze the sentiment of the article
-            articles_analyzed += 1
-            result = sentiment_pipeline(desc)
-            article['sentiment'] = result[0]['label']
-            article['sentiment_score'] = result[0]['score']
+            # Analyze the sentiment of the article description
+            description_input = article['description'] if len(article['description']) < 511 else article['description'][:511]
+            description_result = sentiment_pipeline(description_input)
+
+            article['sentiment'] = (title_result[0]['label'], description_result[0]['label'])
+            article['sentiment_score'] = (title_result[0]['score'], description_result[0]['score'])
 
         # Print the number of articles analyzed
-        print(f'Article analyzed: {articles_analyzed}')
+        print(f'Article analyzed: {len(self.__articles)}')
 
         write_data(self.__articles, 'sentiment')
 

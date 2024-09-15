@@ -25,12 +25,18 @@ class DataCleaner:
         def return_category(keyword: str) -> str:
             """Maps The Hindu's keywords to a more general category."""
             category_map = {
-                "markets": "business",
-                "other sports": "sports",
+                # "markets": "business",    # Markets not to be included
+                "industry": "business",
                 "movies": "entertainment",
                 "india": "politics",
+                "gadgets": "technology",
+                "science": "technology",
+                "other sports": "sports",
+                "cricket": "sports",
+                "hockey": "sports",
+                "football": "sports",
             }
-            return category_map.get(keyword, keyword)
+            return category_map.get(keyword, "top")
 
         for index, article in self.__df.iterrows():
             if article["source_name"] == 'The Hindu':
@@ -51,6 +57,9 @@ class DataCleaner:
 
         # Remove rows with no description
         self.__df = self.__df[self.__df['description'].notna()]
+
+        # Remove rows with no title
+        self.__df = self.__df[self.__df['title'].notna()]
 
         # Drop columns to clean
         self.__df.drop(columns=self.__cols_to_clean, inplace=True)

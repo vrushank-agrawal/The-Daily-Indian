@@ -22,8 +22,9 @@ API_LIMIT = 200
 TIME_BLOCK = 1440
 
 # Time difference between EST and news time in min
+# The news is data is 12 hours behind UTC
 # I use EST because datetime is timezone aware
-TIME_DIFF_MIN =  8 * 60 + 1440 # (hours * 60) + minutes
+TIME_DIFF_MIN =  8 * 60 + TIME_BLOCK # (hours * 60) + TIME_BLOCK in minutes
 
 
 class NewsArticles():
@@ -43,7 +44,7 @@ class NewsArticles():
         self.__query_page = 0
         self.__start_time = datetime.now() - timedelta(minutes=TIME_DIFF_MIN)
         self.__articles = {"articles": [],}
-        print("End time: ", self.__start_time)
+        print("Start time: ", self.__start_time)
 
     def __define_url(self) -> str:
         """ Return a URL to query the NewsData.io API for articles. """
