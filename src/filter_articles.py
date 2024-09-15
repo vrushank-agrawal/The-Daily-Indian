@@ -19,6 +19,7 @@ class FilterArticles:
         self.__cols_to_drop = cols_to_drop
         self.__categories_to_get = categories_to_get
         self.__sections = []
+        self.__pos_articles_removed = []
 
 
     def __remove_all_non_positive_news(self) -> None:
@@ -52,21 +53,31 @@ class FilterArticles:
         self.__df = self.__df[self.__df['category'] != 'politics']
 
 
-    def __remove_all_less_positive_news(self) -> None:
+    def __remove_more_neutral_news(self) -> None:
         """ Removes rows with positive sentiment score less than neutral sentiment score.
         """
 
         # Elements where the first sentiment is neutral and higher than the second sentiment score
         first_neutral_news = self.__df[self.__df['sentiment'].apply(lambda x: x[0] == 'neutral')]
-        first_news_to_remove = first_neutral_news[first_neutral_news['sentiment_score'].apply(lambda x: x[0] > x[1])]
+        first_news_to_remove = first_neutral_news[first_neutral_news['sentiment_score'].apply(lambda x:(x[0] > x[1]))]
+        self.__pos_articles_removed.extend(first_news_to_remove.to_dict('records'))
 
         # Elements where the second sentiment is neutral and higher than the first sentiment score
         second_neutral_news = self.__df[self.__df['sentiment'].apply(lambda x: x[1] == 'neutral')]
-        second_news_to_remove = second_neutral_news[second_neutral_news['sentiment_score'].apply(lambda x: x[1] > x[0])]
+        second_news_to_remove = second_neutral_news[second_neutral_news['sentiment_score'].apply(lambda x: (x[1] > x[0]))]
+        self.__pos_articles_removed.extend(second_news_to_remove.to_dict('records'))
 
         self.__df = self.__df[~self.__df.index.isin(first_news_to_remove.index)]
         self.__df = self.__df[~self.__df.index.isin(second_news_to_remove.index)]
 
+
+    def __remove_less_positive_news(self) -> None:
+        """ Removes rows where the sentiment score is less than 0.6 for both sentiments.
+        """
+
+        less_positive_news = self.__df[self.__df['sentiment_score'].apply(lambda x: x[0] < 0.6 and x[1] < 0.6)]
+        self.__pos_articles_removed.extend(less_positive_news.to_dict('records'))
+        self.__df = self.__df[~self.__df.index.isin(less_positive_news.index)]
 
     def __drop_cols(self, df: pd.DataFrame) -> pd.DataFrame:
         """ Drops the specified columns from the dataframe.
@@ -107,13 +118,15 @@ class FilterArticles:
         self.__remove_all_non_positive_news()
         self.__remove_BS_markets_news()
         self.__remove_all_politics_news()
-        self.__remove_all_less_positive_news()
+        self.__remove_more_neutral_news()
+        self.__remove_less_positive_news()
 
         self.__sections = self.__df.to_dict('records')
 
         # self.__sections = self.__get_top_three_articles()
         # self.__sections.extend(self.__get_all_categories())
 
+        write_data(self.__pos_articles_removed, 'less_pos_news')
         write_data(self.__sections, 'filtered')
 
 
