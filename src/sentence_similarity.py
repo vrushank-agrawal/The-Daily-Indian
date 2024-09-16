@@ -9,10 +9,8 @@ class SentenceSimilarity:
     """
     This class adds sentiment analysis to a list of articles.
 
-    :param __articles: A list of articles.
-    :param __model: The sentiment analysis model.
-    :param __similarity_matrix: The similarity matrix.
     :param __similar_articles: The similar articles.
+    :rtype __similar_articles: List[List[int]]
     """
 
     def __init__(self,

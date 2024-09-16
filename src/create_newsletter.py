@@ -4,8 +4,11 @@ from clean_data import DataCleaner
 from sentiment_analyzer import SentimentAnalyzer
 from sentence_similarity import SentenceSimilarity
 from filter_articles import FilterArticles
+from filter_articles_2 import FilterArticles2
+from select_articles import SelectArticles
+
 from utils.read_write_IO import get_data
-from utils.constants import COLS_TO_CLEAN, COLS_TO_FILTER, DISPLAY_CATEGORIES
+from utils.constants import COLS_TO_CLEAN, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES
 from utils.constants import MODEL_SENTIMENT_ANALYSIS, MODEL_SENTENCE_SIMILARITY
 
 import smtplib
@@ -21,6 +24,12 @@ load_dotenv()
 TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 class NewsLetterHandler:
+    """ This class creates a newsletter.
+
+    :param __date: The date of the newsletter.
+    :param __sections: The news sections of the newsletter.
+    :param __html: The HTML of the newsletter.
+    """
 
     def __init__(self) -> None:
         self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
@@ -31,30 +40,42 @@ class NewsLetterHandler:
         """ Reads a JSON file containing a list of articles and returns the list of articles.
         """
 
-        # Get data from API
-        articles = NewsArticles()
-        articles.run()
-        articles = getattr(articles, '_NewsArticles__articles')['articles']
+        # # Get data from API
+        # articles = NewsArticles()
+        # articles.run()
+        # articles = getattr(articles, '_NewsArticles__articles')['articles']
 
-        # Clean data
-        cleaner = DataCleaner(articles, COLS_TO_CLEAN)
-        cleaner.run()
-        df = getattr(cleaner, '_DataCleaner__df')
+        # # Clean data
+        # cleaner = DataCleaner(articles, COLS_TO_CLEAN)
+        # cleaner.run()
+        # df = getattr(cleaner, '_DataCleaner__df')
 
-        # Analyze sentiment
-        sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'), MODEL_SENTIMENT_ANALYSIS)
-        sentiment_analyzer.run()
-        analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
+        # # Analyze sentiment
+        # sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'), MODEL_SENTIMENT_ANALYSIS)
+        # sentiment_analyzer.run()
+        # analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
 
-        # Filter articles
-        filterer = FilterArticles(analyzed_articles, COLS_TO_FILTER, DISPLAY_CATEGORIES)
-        filterer.run_after_sentiment()
-        self.__sections = getattr(filterer, '_FilterArticles__sections')
+        # # Filter articles
+        # filterer = FilterArticles(analyzed_articles)
+        # filterer.post_sentiment_analysis_run()
+        # filtered_articles = getattr(filterer, '_FilterArticles__filtered_articles')
 
-        # Sentence similarity
-        sentence_similarity = SentenceSimilarity(df.to_dict('records'), MODEL_SENTENCE_SIMILARITY)
-        sentence_similarity.run()
-        self.__sections = getattr(sentence_similarity, '_SentenceSimilarity__sections')
+        # # Sentence similarity
+        # sentence_similarity = SentenceSimilarity(filtered_articles, MODEL_SENTENCE_SIMILARITY)
+        # sentence_similarity.run()
+        # similar_articles = getattr(sentence_similarity, '_SentenceSimilarity__similar_articles')
+
+        # # Filter articles after sentence similarity
+        # filterer2 = FilterArticles2(filtered_articles, similar_articles)
+        # filterer2.post_sentence_similarity_run()
+        # filtered_articles_2 = getattr(filterer2, '_FilterArticles2__articles')
+
+        filtered_articles_2 = get_data('sentence')
+
+        # Select articles
+        selector = SelectArticles(filtered_articles_2, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES)
+        selector.run()
+        self.__sections = getattr(selector, '_SelectArticles__selected_articles')
 
 
     def create_newsletter(self) -> str:

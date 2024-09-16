@@ -26,6 +26,7 @@ class NewsArticles():
         self.__start_time = datetime.now() - timedelta(minutes=START_TIME_DELAY)
         self.__articles = {"articles": [],}
         print("Start time: ", self.__start_time)
+        print("End time: ", self.__start_time + TIME_WINDOW)
 
     def __define_url(self) -> str:
         """ Return a URL to query the NewsData.io API for articles. """

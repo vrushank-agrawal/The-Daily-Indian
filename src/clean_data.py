@@ -26,7 +26,7 @@ class DataCleaner:
             """ Maps The Hindu's keywords to a more general category """
 
             category_map = {
-                # "markets": "business",    # Markets not to be included
+                # "markets": "business",    # Markets have too much individual news
                 "industry": "business",
                 "movies": "entertainment",
                 "india": "politics",
@@ -36,7 +36,7 @@ class DataCleaner:
                 "football": "sports",
                 "gadgets": "technology",
                 "science": "technology",
-                "world": "world",
+                # "world": "world",         # This is India Story not world
             }
             return category_map.get(keyword, "top")
 
@@ -53,12 +53,10 @@ class DataCleaner:
 
 
     def __remove_nulls(self) -> None:
-        """ Removes all rows with null values.
+        """ Removes all rows with no description or title.
         """
-        # Remove rows with no description
-        self.__df = self.__df[self.__df['description'].notna()]
 
-        # Remove rows with no title
+        self.__df = self.__df[self.__df['description'].notna()]
         self.__df = self.__df[self.__df['title'].notna()]
 
 
@@ -74,13 +72,9 @@ class DataCleaner:
         """
 
         self.__set_the_hindu_keywords()
-
         self.__convert_category_to_string()
-
         self.__remove_nulls()
-
         self.__drop_cols()
-
         self.__df.reset_index(drop=True, inplace=True)
 
         write_data(self.__df.to_dict('records'), 'cleaned')

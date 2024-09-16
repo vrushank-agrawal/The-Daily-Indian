@@ -64,9 +64,9 @@ COLS_TO_CLEAN = [
 ]
 
 
-# Columns to remove from the dataframe after analysis
+# Columns to remove from the dataframe after ML analysis
 # Once ML analysis is done, these columns are not needed
-COLS_TO_FILTER = [
+COLS_TO_NOT_SELECT = [
     'category',
     'duplicate',
     'pubDate',
@@ -80,7 +80,8 @@ COLS_TO_FILTER = [
 DISPLAY_CATEGORIES = [
     'business',
     'entertainment',
-    'world',
+    'etcetera',
     'technology',
     'sports',
+    'top_news'
 ]

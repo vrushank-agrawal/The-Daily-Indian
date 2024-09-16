@@ -3,22 +3,17 @@ from typing import List, Dict
 from utils.read_write_IO import get_data, write_data
 
 class FilterArticles:
-    """ This class filters and selects the articles to be sent in the newsletter.
+    """ This class filters the articles based on sentiment  .
 
-    :param __top_articles: The top 3 articles.
-    :param __sections: Top 3 articles from each category.
+    :param __filtered_articles: The filtered articles.
+    :rtype __filtered_articles: List[dict]
     """
 
     def __init__(self,
         articles: List[dict],
-        cols_to_drop: List[str],
-        categories_to_get: List[str],
     ) -> None:
-        self.__articles = articles
         self.__df = pd.DataFrame(articles)
-        self.__cols_to_drop = cols_to_drop
-        self.__categories_to_get = categories_to_get
-        self.__sections = []
+        self.__filtered_articles = []
         self.__pos_articles_removed = []
 
 
@@ -71,7 +66,7 @@ class FilterArticles:
         self.__df = self.__df[~self.__df.index.isin(second_news_to_remove.index)]
 
 
-    def __remove_less_positive_news(self) -> None:
+    def __remove_low_sentiment_news(self) -> None:
         """ Removes rows where the sentiment score is less than 0.6 for both sentiments.
         """
 
@@ -79,39 +74,8 @@ class FilterArticles:
         self.__pos_articles_removed.extend(less_positive_news.to_dict('records'))
         self.__df = self.__df[~self.__df.index.isin(less_positive_news.index)]
 
-    def __drop_cols(self, df: pd.DataFrame) -> pd.DataFrame:
-        """ Drops the specified columns from the dataframe.
-        """
-        df.drop(self.__cols_to_drop, axis=1, inplace=True)
 
-
-    def __get_three_articles(self, category: str) -> Dict[str, List[dict]]:
-        """ Returns the list of articles.
-        """
-        top_three = self.__df[self.__df['category'] == category].head(3)
-        self.__drop_cols(top_three)
-        as_list = top_three.to_dict('records')
-        return { f'{category}' : as_list }
-
-
-    def __get_all_categories(self) -> List[dict]:
-        """ Gets the top 3 articles from each category.
-        """
-        return [self.__get_three_articles(cat) for cat in self.__categories_to_get]
-
-
-    def __get_top_three_articles(self) -> List[Dict[str, List[dict]]]:
-        """ Sets the latest three articles and removes them from the list.
-        """
-        top_articles = self.__articles[:3]
-        self.__articles = self.__articles[3:]
-        top_articles = pd.DataFrame(top_articles)
-        self.__drop_cols(top_articles)
-        top_articles = top_articles.to_dict('records')
-        return [ { "top_articles" : top_articles } ]
-
-
-    def run_after_sentiment(self) -> None:
+    def post_sentiment_analysis_run(self) -> None:
         """ Sets the list of articles.
         """
 
@@ -119,31 +83,15 @@ class FilterArticles:
         self.__remove_BS_markets_news()
         self.__remove_all_politics_news()
         self.__remove_more_neutral_news()
-        self.__remove_less_positive_news()
+        self.__remove_low_sentiment_news()
 
-        self.__sections = self.__df.to_dict('records')
-
-        # self.__sections = self.__get_top_three_articles()
-        # self.__sections.extend(self.__get_all_categories())
-
+        self.__filtered_articles = self.__df.to_dict('records')
+        write_data(self.__filtered_articles, 'filtered')
         write_data(self.__pos_articles_removed, 'less_pos_news')
-        write_data(self.__sections, 'filtered')
-
-
-    def run_after_sentence_similarity(self) -> None:
-        """ Sets the list of articles.
-        """
-
-        self.__select_one_from_similar_articles()
-
-        self.__remove_other_similar_articles()
-
-        self.__sections = self.__df.to_dict('records')
-        write_data(self.__sections, 'sentence')
 
 
 if __name__ == "__main__":
     from utils.constants import COLS_TO_FILTER, DISPLAY_CATEGORIES
     articles = get_data('sentiment')
     filtered = FilterArticles(articles, COLS_TO_FILTER, DISPLAY_CATEGORIES)
-    filtered.run_after_sentiment()
+    filtered.post_sentiment_analysis_run()
