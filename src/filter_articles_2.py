@@ -35,10 +35,12 @@ class FilterArticles2:
                 self.__articles[highest_article]['category'] = f'top_news'
                 self.__articles[highest_article]['sentiment_score'] = [-i, -i]
 
-            # Make the article mandatory to be picked by setting the sentiment score to 1
-            else:
+            # If the article is suggested by more than 2 sources
+            # Then make it mandatory to be included in its category
+            elif len(similar_articles) > 2:
                 self.__articles[highest_article]['sentiment_score'] = [1, 1]
 
+            # Remove the article from the list so that it is not deleted
             similar_articles.remove(highest_article)
 
 

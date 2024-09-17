@@ -77,20 +77,24 @@ class NewsLetterHandler:
         selector.run()
         self.__sections = getattr(selector, '_SelectArticles__selected_articles')
 
+        # TODO  Figure out the content format of top_news.
+        #       Does the description need to be expanded?
+
+        # TODO  Figure out the right categories to display.
+        #       What really constitutes the India Story?
+
 
     def create_newsletter(self) -> str:
         """ Create a newsletter from the sections data
         """
 
         self.__fetch_analyzed_data()
-        # self.__sections = get_data('filtered')
+        # self.__sections = get_data('selected')
 
-        # generate_news_summary
+        self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
+        print("Newsletter created")
 
-        # self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
-        # print("Newsletter created")
-
-        # write_html(self.__html)
+        write_html(self.__html)
 
 
     def send_newsletter(self) -> None:
@@ -141,4 +145,4 @@ def write_html(html: str) -> None:
 if __name__ == "__main__":
     newsletter = NewsLetterHandler()
     newsletter.create_newsletter()
-    # newsletter.send_newsletter()
+    newsletter.send_newsletter()
