@@ -80,7 +80,7 @@ COLS_TO_NOT_SELECT = [
 DISPLAY_CATEGORIES = [
     'business',
     'entertainment',
-    'etcetera',
+    'top',
     'technology',
     'sports',
     'top_news'

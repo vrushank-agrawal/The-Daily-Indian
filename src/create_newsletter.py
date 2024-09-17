@@ -40,37 +40,37 @@ class NewsLetterHandler:
         """ Reads a JSON file containing a list of articles and returns the list of articles.
         """
 
-        # # Get data from API
-        # articles = NewsArticles()
-        # articles.run()
-        # articles = getattr(articles, '_NewsArticles__articles')['articles']
+        # Get data from API
+        articles = NewsArticles()
+        articles.run()
+        articles = getattr(articles, '_NewsArticles__articles')['articles']
 
-        # # Clean data
-        # cleaner = DataCleaner(articles, COLS_TO_CLEAN)
-        # cleaner.run()
-        # df = getattr(cleaner, '_DataCleaner__df')
+        # Clean data
+        cleaner = DataCleaner(articles, COLS_TO_CLEAN)
+        cleaner.run()
+        df = getattr(cleaner, '_DataCleaner__df')
 
-        # # Analyze sentiment
-        # sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'), MODEL_SENTIMENT_ANALYSIS)
-        # sentiment_analyzer.run()
-        # analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
+        # Analyze sentiment
+        sentiment_analyzer = SentimentAnalyzer(df.to_dict('records'), MODEL_SENTIMENT_ANALYSIS)
+        sentiment_analyzer.run()
+        analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
 
-        # # Filter articles
-        # filterer = FilterArticles(analyzed_articles)
-        # filterer.post_sentiment_analysis_run()
-        # filtered_articles = getattr(filterer, '_FilterArticles__filtered_articles')
+        # Filter articles
+        filterer = FilterArticles(analyzed_articles)
+        filterer.post_sentiment_analysis_run()
+        filtered_articles = getattr(filterer, '_FilterArticles__filtered_articles')
 
-        # # Sentence similarity
-        # sentence_similarity = SentenceSimilarity(filtered_articles, MODEL_SENTENCE_SIMILARITY)
-        # sentence_similarity.run()
-        # similar_articles = getattr(sentence_similarity, '_SentenceSimilarity__similar_articles')
+        # filtered_articles = get_data('filtered')
 
-        # # Filter articles after sentence similarity
-        # filterer2 = FilterArticles2(filtered_articles, similar_articles)
-        # filterer2.post_sentence_similarity_run()
-        # filtered_articles_2 = getattr(filterer2, '_FilterArticles2__articles')
+        # Sentence similarity
+        sentence_similarity = SentenceSimilarity(filtered_articles, MODEL_SENTENCE_SIMILARITY)
+        sentence_similarity.run()
+        similar_articles = getattr(sentence_similarity, '_SentenceSimilarity__similar_articles')
 
-        filtered_articles_2 = get_data('sentence')
+        # Filter articles after sentence similarity
+        filterer2 = FilterArticles2(filtered_articles, similar_articles)
+        filterer2.post_sentence_similarity_run()
+        filtered_articles_2 = getattr(filterer2, '_FilterArticles2__articles')
 
         # Select articles
         selector = SelectArticles(filtered_articles_2, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES)

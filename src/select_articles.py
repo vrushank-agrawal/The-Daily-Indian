@@ -38,6 +38,8 @@ class SelectArticles:
         """
 
         cat_df = self.__df[self.__df['category'] == category]
+
+        # TODO - Check if any of the top 3 articles are not India related
         self.__selected_articles[category] = cat_df.head(3)
 
 

@@ -36,7 +36,7 @@ class DataCleaner:
                 "football": "sports",
                 "gadgets": "technology",
                 "science": "technology",
-                # "world": "world",         # This is India Story not world
+                "world": "world",
             }
             return category_map.get(keyword, "top")
 
@@ -60,6 +60,15 @@ class DataCleaner:
         self.__df = self.__df[self.__df['title'].notna()]
 
 
+    def __remove_world_news(self) -> None:
+        """ This is the India story so we don't need world news.
+        """
+
+        self.__df = self.__df[self.__df['category'] != 'world']
+
+        # Remove all news which has the word '/world/' in the link
+        self.__df = self.__df[~((self.__df['category'] == 'top') & (self.__df['link'].str.contains('/world/')))]
+
     def __drop_cols(self) -> None:
         """ Drops the specified columns from the dataframe.
         """
@@ -71,9 +80,12 @@ class DataCleaner:
             cleans the data in the object df of news articles.
         """
 
+        # TODO - Check if the india news in The Hindu is political
+
         self.__set_the_hindu_keywords()
         self.__convert_category_to_string()
         self.__remove_nulls()
+        self.__remove_world_news()
         self.__drop_cols()
         self.__df.reset_index(drop=True, inplace=True)
 
@@ -82,4 +94,5 @@ class DataCleaner:
 
 if __name__ == '__main__':
     from utils.constants import COLS_TO_CLEAN
-    DataCleaner(get_data('articles'), COLS_TO_CLEAN).run()
+    articles = get_data('articles')
+    DataCleaner(get_data('articles')['articles'], COLS_TO_CLEAN).run()

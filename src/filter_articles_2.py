@@ -20,6 +20,8 @@ class FilterArticles2:
             Changes the category of the selected article to 'top_news'.
         """
 
+        # TODO - Only select articles that are reported in more than 2 sources
+
         for i, similar_articles in enumerate(sorted(self.__similar_articles, key=len, reverse=True)):
             # find the article with the highest sentiment score
             highest_score, highest_article = 0, 0
@@ -30,11 +32,11 @@ class FilterArticles2:
 
             # Mark the top 3 articles as top_news
             if i < 3:
-                self.__articles[highest_article]['category'] = f'top_news_{i+1}'
+                self.__articles[highest_article]['category'] = f'top_news'
+                self.__articles[highest_article]['sentiment_score'] = [-i, -i]
 
             # Make the article mandatory to be picked by setting the sentiment score to 1
             else:
-                self.__articles[highest_article]['sentiment'] = ['positive', 'positive']
                 self.__articles[highest_article]['sentiment_score'] = [1, 1]
 
             similar_articles.remove(highest_article)
