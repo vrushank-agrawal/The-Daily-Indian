@@ -12,7 +12,7 @@ class GetSubscribers:
     """
 
     def __init__(self) -> None:
-        self.__subscribers = self.__get_subscribers()
+        self.__subscribers = []
 
 
     def __get_subscribers(self) -> List[dict]:
@@ -28,12 +28,32 @@ class GetSubscribers:
         if response.status_code == 200:
             # Assuming the response is in JSON format
             subscribers = response.json()
-            print(subscribers)
+            print(f"{len(subscribers)} subscribers fetched.")
         else:
             print(f"Failed to retrieve subscribers: {response.status_code}")
 
-        return subscribers
+        self.__subscribers = subscribers
+
+
+    def __convert_subscribers_to_email_list(self) -> None:
+        """ Convert the list of subscribers to a list of emails.
+        """
+        email_list = [
+                {
+                    "email": subscriber['subscriber_email'],
+                    "name": "Subscriber"
+                }
+                for subscriber in self.__subscribers
+            ]
+        self.__subscribers = email_list
+
+
+    def run(self) -> None:
+        """ Entry point to fetch subscribers.
+        """
+        self.__get_subscribers()
+        self.__convert_subscribers_to_email_list()
 
 
 if __name__ == "__main__":
-    GetSubscribers()
+    GetSubscribers().run()

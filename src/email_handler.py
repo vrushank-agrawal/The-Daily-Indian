@@ -25,7 +25,7 @@ class EmailHandler:
         """ Create an instance of the Brevo API.
         """
         configuration = sib_api_v3_sdk.Configuration()
-        configuration.brevo_api_key['api-key'] = self.__brevo_api_key
+        configuration.api_key['api-key'] = self.__brevo_api_key
         self.__api_instance = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(configuration))
 
 

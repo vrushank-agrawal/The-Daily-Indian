@@ -7,6 +7,7 @@ from filter_articles import FilterArticles
 from filter_articles_2 import FilterArticles2
 from select_articles import SelectArticles
 from get_subscribers import GetSubscribers
+from email_handler import EmailHandler
 
 from utils.read_write_IO import get_data
 from utils.constants import COLS_TO_CLEAN, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES
@@ -99,14 +100,17 @@ class NewsLetterHandler:
         write_html(self.__html)
         print("Newsletter created")
 
-        email_list = GetSubscribers()
-        email_handler = NewsLetterHandler(
+        # self.__html = get_html()
+
+        get_subscribers = GetSubscribers()
+        get_subscribers.run()
+        email_handler = EmailHandler(
             os.getenv("BREVO_API_KEY"),
             self.__subject,
             self.__html,
-            getattr(email_list, '_GetSubscribers__subscribers')
+            getattr(get_subscribers, '_GetSubscribers__subscribers')
         )
-        email_handler.run()
+        email_handler.send()
         print("Newsletter sent")
 
 
@@ -153,6 +157,19 @@ def write_html(html: str) -> None:
         f.write(html)
 
     print(f'Wrote Newsletter to newsletter.html')
+
+
+def get_html() -> str:
+    """
+    Returns the HTML content of the newsletter.
+
+    Returns:
+        str: The HTML content of the newsletter.
+    """
+    with open(f'data/newsdataio/newsletter/{TODAY_DATE}.html', 'r') as f:
+        html = f.read()
+
+    return html
 
 
 if __name__ == "__main__":
