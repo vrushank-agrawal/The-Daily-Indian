@@ -6,6 +6,7 @@ from sentence_similarity import SentenceSimilarity
 from filter_articles import FilterArticles
 from filter_articles_2 import FilterArticles2
 from select_articles import SelectArticles
+from get_subscribers import GetSubscribers
 
 from utils.read_write_IO import get_data
 from utils.constants import COLS_TO_CLEAN, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES
@@ -35,8 +36,9 @@ class NewsLetterHandler:
         self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
         self.__sections = []
         self.__html = ''
+        self.__subject = f"Daily Indian Story: {self.__date}"
 
-    def __fetch_analyzed_data(self) -> None:
+    def __create_data(self) -> None:
         """ Reads a JSON file containing a list of articles and returns the list of articles.
         """
 
@@ -83,50 +85,61 @@ class NewsLetterHandler:
         # TODO  Figure out the right categories to display.
         #       What really constitutes the India Story?
 
+        # URGENT
+        # TODO  Get the subject of the newsletter.
 
-    def create_newsletter(self) -> str:
+
+    def run(self) -> None:
         """ Create a newsletter from the sections data
         """
 
-        self.__fetch_analyzed_data()
+        self.__create_data()
         # self.__sections = get_data('selected')
-
         self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
+        write_html(self.__html)
         print("Newsletter created")
 
-        write_html(self.__html)
+        email_list = GetSubscribers()
+        email_handler = NewsLetterHandler(
+            os.getenv("BREVO_API_KEY"),
+            self.__subject,
+            self.__html,
+            getattr(email_list, '_GetSubscribers__subscribers')
+        )
+        email_handler.run()
+        print("Newsletter sent")
 
 
-    def send_newsletter(self) -> None:
-        """ Send a newsletter email
-        """
+    # def send_newsletter(self) -> None:
+    #     """ Send a newsletter email
+    #     """
 
-        print("Sending newsletter...")
-        sender_email = os.getenv("SENDER_EMAIL")
-        sender_password = os.getenv("SENDER_PASSWORD")
-        receiver_email = os.getenv("RECEIVER_EMAIL")
+    #     print("Sending newsletter...")
+    #     sender_email = os.getenv("SENDER_EMAIL")
+    #     sender_password = os.getenv("SENDER_PASSWORD")
+    #     receiver_email = os.getenv("RECEIVER_EMAIL")
 
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "The Indian Gospel Daily Digest"
-        message["From"] = sender_email
-        message["To"] = receiver_email
+    #     message = MIMEMultipart("alternative")
+    #     message["Subject"] = "The Indian Gospel Daily Digest"
+    #     message["From"] = sender_email
+    #     message["To"] = receiver_email
 
-        part = MIMEText(self.__html, "html")
-        message.attach(part)
+    #     part = MIMEText(self.__html, "html")
+    #     message.attach(part)
 
-        # with open("src/utils/newsletter-logo.jpeg", "rb") as f:
-        #     image = MIMEImage(f.read())
-        # image.add_header("Content-ID", "<image1>")
-        # message.attach(image)
+    #     # with open("src/utils/newsletter-logo.jpeg", "rb") as f:
+    #     #     image = MIMEImage(f.read())
+    #     # image.add_header("Content-ID", "<image1>")
+    #     # message.attach(image)
 
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, receiver_email, message.as_string())
+    #     with smtplib.SMTP("smtp.gmail.com", 587) as server:
+    #         server.ehlo()
+    #         server.starttls()
+    #         server.ehlo()
+    #         server.login(sender_email, sender_password)
+    #         server.sendmail(sender_email, receiver_email, message.as_string())
 
-        print("Newsletter sent to {}".format(receiver_email))
+    #     print("Newsletter sent to {}".format(receiver_email))
 
 
 def write_html(html: str) -> None:
@@ -144,5 +157,5 @@ def write_html(html: str) -> None:
 
 if __name__ == "__main__":
     newsletter = NewsLetterHandler()
-    newsletter.create_newsletter()
-    newsletter.send_newsletter()
+    newsletter.run()
+    # newsletter.send_newsletter()
