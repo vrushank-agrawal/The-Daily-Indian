@@ -29,21 +29,21 @@ jobs:
       - name: Logout from Docker Hub
         run: docker logout
 
-      # - name: Run Docker container with environment variables
-      #   run: |
-      #     docker run --rm \
-      #       -e NEWSDATAIO_API_KEY=${{ secrets.NEWSDATAIO_API_KEY }} \
-      #       -e NEWSDATAIO_API_KEY_2=${{ secrets.NEWSDATAIO_API_KEY_2 }} \
-      #       -e NEWSDATAIO_API_KEY_3=${{ secrets.NEWSDATAIO_API_KEY_3 }} \
-      #       -e NEWSDATAIO_API_KEY_4=${{ secrets.NEWSDATAIO_API_KEY_4 }} \
-      #       -e NEWSDATAIO_API_KEY_5=${{ secrets.NEWSDATAIO_API_KEY_5 }} \
+      - name: Run Docker container with environment variables
+        run: |
+          docker run --rm \
+            -e NEWSDATAIO_API_KEY=${{ secrets.NEWSDATAIO_API_KEY }} \
+            -e NEWSDATAIO_API_KEY_2=${{ secrets.NEWSDATAIO_API_KEY_2 }} \
+            -e NEWSDATAIO_API_KEY_3=${{ secrets.NEWSDATAIO_API_KEY_3 }} \
+            -e NEWSDATAIO_API_KEY_4=${{ secrets.NEWSDATAIO_API_KEY_4 }} \
+            -e NEWSDATAIO_API_KEY_5=${{ secrets.NEWSDATAIO_API_KEY_5 }} \
 
-      #       -e BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} \
+            -e BREVO_API_KEY=${{ secrets.BREVO_API_KEY }} \
 
-      #       -e INDIA_STORY_API_KEY=${{ secrets.INDIA_STORY_API_KEY }} \
-      #       -e VERCEL_ACCESS_TOKEN=${{ secrets.VERCEL_ACCESS_TOKEN }} \
+            -e INDIA_STORY_API_KEY=${{ secrets.INDIA_STORY_API_KEY }} \
+            -e VERCEL_ACCESS_TOKEN=${{ secrets.VERCEL_ACCESS_TOKEN }} \
 
-      #       -e ENVIRONMENT=production \
+            -e ENVIRONMENT=production \
 
-      #       ${{ vars.DOCKER_USERNAME }}/the-india-story:latest
+            ${{ vars.DOCKER_USERNAME }}/the-india-story:latest
 
