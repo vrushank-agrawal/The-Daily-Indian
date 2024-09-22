@@ -25,6 +25,17 @@ load_dotenv()
 
 TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
+# TODO create a super class for environment variables
+# to be accessed by all subclasses
+
+# TODO create a class for different levels of Log Messages:
+# Verbose: Info in development -> Not needed
+# Trace: Info in development
+# Info: Info in production
+# Warning: Warning in production / development  ->  Send email?
+# Error: Error in production / development  ->  Retry
+# Critical: Critical in production / development
+
 class NewsLetterHandler:
     """ This class creates a newsletter.
 
@@ -38,6 +49,7 @@ class NewsLetterHandler:
         self.__sections = []
         self.__html = ''
         self.__subject = f"Daily Indian Story: {self.__date}"
+        self.__environment = os.getenv("ENVIRONMENT")
 
     def __create_data(self) -> None:
         """ Reads a JSON file containing a list of articles and returns the list of articles.
@@ -58,12 +70,12 @@ class NewsLetterHandler:
         sentiment_analyzer.run()
         analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
 
+        # analyzed_articles = get_data('sentiment')
+
         # Filter articles
         filterer = FilterArticles(analyzed_articles)
         filterer.post_sentiment_analysis_run()
         filtered_articles = getattr(filterer, '_FilterArticles__filtered_articles')
-
-        # filtered_articles = get_data('filtered')
 
         # Sentence similarity
         sentence_similarity = SentenceSimilarity(filtered_articles, MODEL_SENTENCE_SIMILARITY)
@@ -102,14 +114,27 @@ class NewsLetterHandler:
 
         # self.__html = get_html()
 
-        get_subscribers = GetSubscribers()
-        get_subscribers.run()
-        email_handler = EmailHandler(
-            os.getenv("BREVO_API_KEY"),
-            self.__subject,
-            self.__html,
-            getattr(get_subscribers, '_GetSubscribers__subscribers')
-        )
+        # TODO create a separate development environemnt
+        # where the email is sent only to me
+
+        if self.__environment == 'production':
+            print("Running in production")
+            get_subscribers = GetSubscribers()
+            get_subscribers.run()
+            email_handler = EmailHandler(
+                os.getenv("BREVO_API_KEY"),
+                self.__subject,
+                self.__html,
+                getattr(get_subscribers, '_GetSubscribers__subscribers')
+            )
+        else:
+            print("Running in Development")
+            email_handler = EmailHandler(
+                os.getenv("BREVO_API_KEY"),
+                self.__subject,
+                self.__html
+            )
+
         email_handler.send()
         print("Newsletter sent")
 

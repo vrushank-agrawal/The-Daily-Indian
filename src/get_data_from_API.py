@@ -4,7 +4,14 @@ import json
 from datetime import datetime, timedelta, timezone
 from typing import Dict
 from utils.exceptions import APIError
-from utils.constants import START_TIME_DELAY, TIME_WINDOW, MAX_CALLS_PER_15_MIN, INCLUDE_DOMAINS
+from utils.constants import (
+    TIME_WINDOW,
+    TIME_WINDOW_MONDAY,
+    START_TIME_DELAY,
+    START_TIME_DELAY_MONDAY,
+    MAX_CALLS_PER_15_MIN,
+    INCLUDE_DOMAINS
+)
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -23,10 +30,16 @@ class NewsArticles():
         self.__country = country
         self.__lang = lang
         self.__query_page = 0
-        self.__start_time = datetime.now() - timedelta(minutes=START_TIME_DELAY)
         self.__articles = {"articles": [],}
+
+        # Modify the start time based on the day of the week
+        self.__day = datetime.now(timezone.utc).strftime("%A")
+        self.__time_delay = START_TIME_DELAY if self.__day != "Monday" else START_TIME_DELAY_MONDAY
+        self.__time_window = TIME_WINDOW if self.__day != "Monday" else TIME_WINDOW_MONDAY
+        self.__start_time = datetime.now() - timedelta(minutes=self.__time_delay)
+
         print("Start time: ", self.__start_time)
-        print("End time: ", self.__start_time + timedelta(minutes=int(TIME_WINDOW)))
+        print("End time: ", self.__start_time + timedelta(minutes=int(self.__time_window)))
 
     def __define_url(self) -> str:
         """ Return a URL to query the NewsData.io API for articles. """
@@ -86,7 +99,7 @@ class NewsArticles():
 
             # If publication time > than current time, we've exhausted articles
             if last_fetched_article_time < self.__start_time:
-                print(f'Fetched all articles for {TIME_WINDOW} minutes before {self.__start_time}')
+                print(f'Fetched all articles for {self.__time_window} minutes before {self.__start_time}')
                 return True
 
         return False
