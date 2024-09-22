@@ -12,7 +12,10 @@ class EmailHandler:
             brevo_api_key: str,
             email_subject: str,
             html_content: str,
-            email_list: List[dict] = [email_constants.TO_EMAIL],
+            email_list: List[dict] = [{
+                "email": email_constants.TO_EMAIL,
+                "name": email_constants.TO_NAME
+            }],
         ) -> None:
         self.__brevo_api_key = brevo_api_key
         self.__email_subject = email_subject

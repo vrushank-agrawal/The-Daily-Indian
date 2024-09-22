@@ -80,9 +80,6 @@ class DataCleaner:
             cleans the data in the object df of news articles.
         """
 
-        # TODO  Check if the oldest articles from today are
-        #       common with the latest articles from yesterday
-
         # TODO  Check if the india news in The Hindu is political
 
         self.__set_the_hindu_keywords()

@@ -14,11 +14,13 @@ DAILY_API_LIMIT = 200
 
 # Time window to fetch articles in minutes
 TIME_WINDOW = 1440
+TIME_WINDOW_MONDAY = 2880
 
 # Time diff between time of available news and curr time
 # The news is data is 12 hours behind UTC
 # Use EST because datetime is timezone aware
 START_TIME_DELAY =  8 * 60 + TIME_WINDOW # (hours * 60) + TIME_BLOCK in minutes
+START_TIME_DELAY_MONDAY =  8 * 60 + TIME_WINDOW_MONDAY # (hours * 60) + TIME_BLOCK in minutes
 
 # Domains to exclude
 EXCLUDE_DOMAINS = (
