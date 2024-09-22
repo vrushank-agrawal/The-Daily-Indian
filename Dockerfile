@@ -21,4 +21,4 @@ RUN python -m pip install -r requirements.txt
 COPY . /app/
 
 # Run the script
-ENTRYPOINT ["python", "src/create_newsletter.py"]
+ENTRYPOINT ["python", "src/"]
