@@ -114,9 +114,6 @@ class NewsLetterHandler:
 
         # self.__html = get_html()
 
-        # TODO create a separate development environemnt
-        # where the email is sent only to me
-
         if self.__environment == 'production':
             print("Running in production")
             get_subscribers = GetSubscribers()

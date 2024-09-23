@@ -1,4 +1,4 @@
-SENDER_NAME="The India Story"
+SENDER_NAME="The Daily Indian"
 SENDER_EMAIL="vrushank@vrushank.net"
 
 REPLY_NAME=SENDER_NAME
