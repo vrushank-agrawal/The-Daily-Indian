@@ -38,6 +38,7 @@ class NewsArticles():
         self.__time_window = TIME_WINDOW if self.__day != "Monday" else TIME_WINDOW_MONDAY
         self.__start_time = datetime.now() - timedelta(minutes=self.__time_delay)
 
+        print("Day: ", self.__day)
         print("Start time: ", self.__start_time)
         print("End time: ", self.__start_time + timedelta(minutes=int(self.__time_window)))
 

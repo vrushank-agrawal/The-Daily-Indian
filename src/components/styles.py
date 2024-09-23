@@ -35,8 +35,8 @@ def create_head() -> str:
                 margin-bottom: 20px;
             }
 
-            .m-top-2 {
-                margin-top: 2px !important;
+            .m-top-0 {
+                margin-top: 0px !important;
             }
 
             .m-top-10 {
@@ -51,8 +51,15 @@ def create_head() -> str:
                 margin-bottom: 10px !important;
             }
 
-            .section-title {
+            .background-light-green {
                 background-color: lightgreen;
+            }
+
+            .background-light-blue {
+                background-color: lightblue;
+            }
+
+            .section-title {
                 display: inline-block;
                 margin: 0;
                 margin-top: 10px;
@@ -67,7 +74,7 @@ def create_head() -> str:
                 margin: auto;
                 margin-top: 10px;
                 max-width: 600px;
-                padding: 10px 20px 30px;
+                padding: 10px 20px 10px;
             }
 
             .button {

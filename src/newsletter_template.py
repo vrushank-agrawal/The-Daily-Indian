@@ -1,5 +1,7 @@
-from components import header, footer, section, styles, top_news
+from components import header, footer, styles, top_news
 from typing import List, Dict
+
+from components import sections
 
 def newsletter_template(
     date: str,
@@ -12,7 +14,7 @@ def newsletter_template(
     header_string = header.create_header(date)
     topNews_string = top_news.create_body(sections_news["top_news"])
     sections_news.pop("top_news")
-    section_string = "".join([section.create_section(key, value) for key, value in sections_news.items()])
+    section_string = sections.create_sections(sections_news)
     footer_string = footer.create_footer()
 
     # <<! <img src="cid:image1" alt="Indian Gospel" width="150" height="150"> >>
