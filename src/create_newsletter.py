@@ -70,8 +70,6 @@ class NewsLetterHandler:
         sentiment_analyzer.run()
         analyzed_articles = getattr(sentiment_analyzer, '_SentimentAnalyzer__articles')
 
-        # analyzed_articles = get_data('sentiment')
-
         # Filter articles
         filterer = FilterArticles(analyzed_articles)
         filterer.post_sentiment_analysis_run()
@@ -86,6 +84,8 @@ class NewsLetterHandler:
         filterer2 = FilterArticles2(filtered_articles, similar_articles)
         filterer2.post_sentence_similarity_run()
         filtered_articles_2 = getattr(filterer2, '_FilterArticles2__articles')
+
+        # filtered_articles_2 = get_data('sentence')
 
         # Select articles
         selector = SelectArticles(filtered_articles_2, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES)

@@ -119,6 +119,8 @@ class NewsArticles():
         api4 = os.getenv("NEWSDATAIO_API_KEY_4")
         api5 = os.getenv("NEWSDATAIO_API_KEY_5")
 
+        # TODO If it's a monday then run it two times
+
         for i, api in enumerate([api1, api2, api3, api4, api5]):
             print(f'Using API key: {i+1}')
             self.__api_key = api
