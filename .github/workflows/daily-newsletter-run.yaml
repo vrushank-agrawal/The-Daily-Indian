@@ -3,6 +3,12 @@ name: Daily Newsletter Dispatch
 # Cron job runs every morning UTC at 2:30 AM Mon-Sat
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: "Specify the environment to use"
+        required: false
+        default: "production"
+        type: string
   schedule:
     - cron: "30 2 * * 1-6"
 
