@@ -26,7 +26,9 @@ load_dotenv()
 TODAY_DATE = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 # TODO create a super class for environment variables
-# to be accessed by all subclasses
+# and read write IO to be accessed by all subclasses
+
+# TODO connect to an external db to regularly update data
 
 # TODO create a class for different levels of Log Messages:
 # Verbose: Info in development -> Not needed
