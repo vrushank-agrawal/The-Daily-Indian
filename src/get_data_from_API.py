@@ -2,7 +2,8 @@ import os
 import requests
 import json
 from datetime import datetime, timedelta, timezone
-from typing import Dict
+from time import sleep
+from typing import Dict, List
 from utils.exceptions import APIError
 from utils.constants import (
     TIME_WINDOW,
@@ -10,7 +11,8 @@ from utils.constants import (
     START_TIME_DELAY,
     START_TIME_DELAY_MONDAY,
     MAX_CALLS_PER_15_MIN,
-    INCLUDE_DOMAINS
+    INCLUDE_DOMAINS,
+    DAILY_API_LIMIT
 )
 from dotenv import load_dotenv
 load_dotenv()
@@ -41,6 +43,7 @@ class NewsArticles():
         print("Day: ", self.__day)
         print("Start time: ", self.__start_time)
         print("End time: ", self.__start_time + timedelta(minutes=int(self.__time_window)))
+
 
     def __define_url(self) -> str:
         """ Return a URL to query the NewsData.io API for articles. """
@@ -93,17 +96,36 @@ class NewsArticles():
             calls += 1
             self.__extend_page()
 
-            # Get the pub time of the last article fetched
-            # Convert the time to a datetime object
+            # Get the pub time of the last article fetched & convert to a datetime object
             last_fetched_article_time = self.__articles['articles'][-1]['pubDate']
             last_fetched_article_time = datetime.strptime(last_fetched_article_time, "%Y-%m-%d %H:%M:%S")
 
             # If publication time > than current time, we've exhausted articles
             if last_fetched_article_time < self.__start_time:
-                print(f'Fetched all articles for {self.__time_window} minutes before {self.__start_time}')
+                print(f'Fetched all articles for {self.__time_window} minutes after {self.__start_time}')
                 return True
 
         return False
+
+
+    def __fetched_all_articles(self, apis: List[str]) -> bool:
+        """ Fetches all articles from the NewsData.io API for past 1 day.
+
+        :param apis: A list of API keys
+        :type apis: list
+        :return: True if all articles were fetched, False otherwise
+        :rtype: bool
+        """
+
+        for i, api in enumerate(apis):
+            print(f'Using API key: {i+1}')
+            self.__api_key = api
+            all_fetched = self.__fetch_block()
+            if all_fetched:
+                return True
+
+        return False
+
 
     def run(self) -> None:
         """
@@ -118,15 +140,15 @@ class NewsArticles():
         api3 = os.getenv("NEWSDATAIO_API_KEY_3")
         api4 = os.getenv("NEWSDATAIO_API_KEY_4")
         api5 = os.getenv("NEWSDATAIO_API_KEY_5")
+        apis = [api1, api2, api3, api4, api5]
 
-        # TODO If it's a monday then run it two times
-
-        for i, api in enumerate([api1, api2, api3, api4, api5]):
-            print(f'Using API key: {i+1}')
-            self.__api_key = api
-            all_fetched = self.__fetch_block()
-            if all_fetched:
-                break
+        # Fetch all articles in 16 minute intervals until API limit reached
+        calls = 0
+        while not self.__fetched_all_articles(apis) and calls < DAILY_API_LIMIT:
+            print(f'API calls remaining: {DAILY_API_LIMIT - calls}')
+            print('Sleeping for 16 minutes...')
+            sleep(60*16)                    # 16 minutes
+            calls += MAX_CALLS_PER_15_MIN   # 30 calls per 15 minutes
 
         write_to_file(self.__articles)
 
@@ -149,4 +171,3 @@ def write_to_file(articles: Dict[str, list]) -> None:
 if __name__ == '__main__':
     news = NewsArticles()
     news.run()
-    write_to_file(getattr(news, '_NewsArticles__articles'))

@@ -6,12 +6,13 @@ from sentence_similarity import SentenceSimilarity
 from filter_articles import FilterArticles
 from filter_articles_2 import FilterArticles2
 from select_articles import SelectArticles
+from text_summarization import TextSummarization
 from get_subscribers import GetSubscribers
 from email_handler import EmailHandler
 
 from utils.read_write_IO import get_data
 from utils.constants import COLS_TO_CLEAN, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES
-from utils.constants import MODEL_SENTIMENT_ANALYSIS, MODEL_SENTENCE_SIMILARITY
+from utils.constants import MODEL_SENTIMENT_ANALYSIS, MODEL_SENTENCE_SIMILARITY, MODEL_TEXT_SUMMARIZATION
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -50,7 +51,7 @@ class NewsLetterHandler:
         self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
         self.__sections = []
         self.__html = ''
-        self.__subject = f"Daily Indian Story: {self.__date}"
+        self.__subject = f"The Daily Indian: {self.__date}"
         self.__environment = os.getenv("ENVIRONMENT")
 
     def __create_data(self) -> None:
@@ -87,21 +88,23 @@ class NewsLetterHandler:
         filterer2.post_sentence_similarity_run()
         filtered_articles_2 = getattr(filterer2, '_FilterArticles2__articles')
 
-        # filtered_articles_2 = get_data('sentence')
-
         # Select articles
         selector = SelectArticles(filtered_articles_2, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES)
         selector.run()
         self.__sections = getattr(selector, '_SelectArticles__selected_articles')
+
+        # self.__sections = get_data('selected')
+
+        # Title Text Summarizer
+        summarizer = TextSummarization(self.__sections["top_news"], MODEL_TEXT_SUMMARIZATION)
+        summarizer.run()
+        self.__subject = getattr(summarizer, '_TextSummarization__subject')
 
         # TODO  Figure out the content format of top_news.
         #       Does the description need to be expanded?
 
         # TODO  Figure out the right categories to display.
         #       What really constitutes the India Story?
-
-        # URGENT
-        # TODO  Get the subject of the newsletter.
 
 
     def run(self) -> None:
@@ -120,20 +123,20 @@ class NewsLetterHandler:
             print("Running in production")
             get_subscribers = GetSubscribers()
             get_subscribers.run()
-            email_handler = EmailHandler(
-                os.getenv("BREVO_API_KEY"),
-                self.__subject,
-                self.__html,
-                getattr(get_subscribers, '_GetSubscribers__subscribers')
-            )
+            subscribers = getattr(get_subscribers, '_GetSubscribers__subscribers')
         else:
             print("Running in Development")
-            email_handler = EmailHandler(
-                os.getenv("BREVO_API_KEY"),
-                self.__subject,
-                self.__html
-            )
+            subscribers = [
+                # {"email": "Deepika.sangal@gmail.com", "name": "Subscriber"},
+                {"email": "vrushank2001@gmail.com", "name": "Vrushank"}
+            ]
 
+        email_handler = EmailHandler(
+            os.getenv("BREVO_API_KEY"),
+            self.__subject,
+            self.__html,
+            subscribers
+        )
         email_handler.send()
         print("Newsletter sent")
 
