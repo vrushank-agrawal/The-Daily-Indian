@@ -50,7 +50,7 @@ class NewsLetterHandler:
         self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
         self.__sections = []
         self.__html = ''
-        self.__subject = f"Daily Indian Story: {self.__date}"
+        self.__subject = f"The Daily Indian: {self.__date}"
         self.__environment = os.getenv("ENVIRONMENT")
 
     def __create_data(self) -> None:
@@ -108,32 +108,32 @@ class NewsLetterHandler:
         """ Create a newsletter from the sections data
         """
 
-        self.__create_data()
-        # self.__sections = get_data('selected')
-        self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
-        write_html(self.__html)
-        print("Newsletter created")
+        # self.__create_data()
+        # # self.__sections = get_data('selected')
+        # self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
+        # write_html(self.__html)
+        # print("Newsletter created")
 
-        # self.__html = get_html()
+        self.__html = get_html()
 
         if self.__environment == 'production':
             print("Running in production")
             get_subscribers = GetSubscribers()
             get_subscribers.run()
-            email_handler = EmailHandler(
-                os.getenv("BREVO_API_KEY"),
-                self.__subject,
-                self.__html,
-                getattr(get_subscribers, '_GetSubscribers__subscribers')
-            )
+            subscribers = getattr(get_subscribers, '_GetSubscribers__subscribers')
         else:
             print("Running in Development")
-            email_handler = EmailHandler(
-                os.getenv("BREVO_API_KEY"),
-                self.__subject,
-                self.__html
-            )
+            subscribers = [
+                # {"email": "Deepika.sangal@gmail.com", "name": "Subscriber"},
+                {"email": "vrushank2001@gmail.com", "name": "Vrushank"}
+            ]
 
+        email_handler = EmailHandler(
+            os.getenv("BREVO_API_KEY"),
+            self.__subject,
+            self.__html,
+            subscribers
+        )
         email_handler.send()
         print("Newsletter sent")
 

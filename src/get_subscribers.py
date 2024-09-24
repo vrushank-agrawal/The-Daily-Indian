@@ -8,15 +8,18 @@ load_dotenv()
 class GetSubscribers:
     """ Fetches the list of subscribers from API.
 
-    :param __subscribers: A list of subscribers.
+    :param __subscribers: A list of subscribers. Where each
+        subscriber is a dictionary with 'email' and 'name' keys.
     """
 
     def __init__(self) -> None:
         self.__subscribers = []
 
 
+    # TODO Fetch subscribers directly from the db
+
     def __get_subscribers(self) -> List[dict]:
-        url = "https://theindiastory.vercel.app/api/subscribe"
+        url = "https://thedailyindian.vercel.app/api/subscribe"
         # url = "http://localhost:3000/api/subscribe"
         headers = {
             "apikey": os.getenv("INDIA_STORY_API_KEY"),

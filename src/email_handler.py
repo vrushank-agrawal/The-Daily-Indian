@@ -1,5 +1,6 @@
 from __future__ import print_function
 import sib_api_v3_sdk
+import hashlib
 from sib_api_v3_sdk.rest import ApiException
 from pprint import pprint
 from typing import List
@@ -24,6 +25,19 @@ class EmailHandler:
         self.__api_instance = None
 
 
+    # TODO Idempotency key is not working. Need to figure out why.
+
+    def __generate_idempotency_key(self) -> str:
+        """ Generate an idempotency key based on the current date.
+            This ensures that the key is unique each day.
+        """
+        from datetime import datetime
+        current_time = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        hash_object = hashlib.sha256(current_time.encode())
+        idempotency_key = hash_object.hexdigest()[:16]
+        return idempotency_key
+
+
     def __create_api_instance(self) -> None:
         """ Create an instance of the Brevo API.
         """
@@ -41,7 +55,8 @@ class EmailHandler:
             headers={
                 'accept': 'application/json',
                 'content-type': 'application/json',
-                'api-key': self.__brevo_api_key
+                'api-key': self.__brevo_api_key,
+                'idempotencyKey': self.__generate_idempotency_key()
             },
 
             sender={"name": email_constants.SENDER_NAME, "email": email_constants.SENDER_EMAIL},
@@ -82,7 +97,7 @@ if __name__ == "__main__":
 
     email_handler = EmailHandler(
         brevo_api_key=brevo_api_key,
-        email_subject="The Daily Indian Story",
+        email_subject="The Daily Indian",
         html_content=html_content
     )
     email_handler.send()
