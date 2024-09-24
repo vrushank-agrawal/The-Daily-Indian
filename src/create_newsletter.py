@@ -108,13 +108,13 @@ class NewsLetterHandler:
         """ Create a newsletter from the sections data
         """
 
-        # self.__create_data()
-        # # self.__sections = get_data('selected')
-        # self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
-        # write_html(self.__html)
-        # print("Newsletter created")
+        self.__create_data()
+        # self.__sections = get_data('selected')
+        self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
+        write_html(self.__html)
+        print("Newsletter created")
 
-        self.__html = get_html()
+        # self.__html = get_html()
 
         if self.__environment == 'production':
             print("Running in production")
