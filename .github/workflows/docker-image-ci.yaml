@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/the-india-story:latest,${{ vars.DOCKER_USERNAME }}/the-india-story:${{ env.DATE }}
+          tags: ${{ vars.DOCKER_USERNAME }}/the-india-story:latest
 
       - name: Logout from Docker Hub
         run: docker logout

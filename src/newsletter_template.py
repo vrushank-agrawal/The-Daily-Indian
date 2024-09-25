@@ -3,15 +3,28 @@ from typing import List, Dict
 
 from components import sections
 
+
+def newsletter_summary(news_summaries: List[str]) -> str:
+    """ Create a summary for the newsletter header using the
+        title summaries of the top news articles.
+    """
+    if not news_summaries:
+        return ""
+
+    return f"Today we are covering {news_summaries[0]}, {news_summaries[1]}, {news_summaries[2]}, and other top stories."
+
+
 def newsletter_template(
     date: str,
-    sections_news: List[Dict[str, List[List[str]]]]
+    sections_news: List[Dict[str, List[List[str]]]],
+    top_news_summaries: List[str] = []
 ) -> str:
     """ Create an html email message
     """
 
+    header_summary_string = newsletter_summary(top_news_summaries)
     styles_string = styles.create_head()
-    header_string = header.create_header(date)
+    header_string = header.create_header(date, header_summary_string)
     topNews_string = top_news.create_body(sections_news["top_news"])
     sections_news.pop("top_news")
     section_string = sections.create_sections(sections_news)

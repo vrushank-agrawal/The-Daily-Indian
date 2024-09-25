@@ -95,6 +95,9 @@ class NewsLetterHandler:
 
         # self.__sections = get_data('selected')
 
+        # TODO  Add another class for text summarization for the newsletter header.
+        #       Modularize the code for text summarization through inheritance.
+
         # Title Text Summarizer
         summarizer = TextSummarization(self.__sections["top_news"], MODEL_TEXT_SUMMARIZATION)
         summarizer.run()
