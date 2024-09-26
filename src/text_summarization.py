@@ -75,6 +75,8 @@ Each key should have the summary of the corresponding headline.
         """ Get the summaries of the top news articles.
         """
 
+        # TODO retry the api if it fails
+
         messages = self.__message_for_model(titles)
         output = self.__client.chat.completions.create(
             model = self.__model,
