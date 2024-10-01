@@ -108,7 +108,6 @@ class NewsLetterHandler:
         #       What really constitutes the India Story?
 
 
-
     def __modify_sections(self) -> None:
         """ If any section has no news then remove it.
 
@@ -129,6 +128,7 @@ class NewsLetterHandler:
             top_articles = self.__sections["top"]
             self.__sections.pop("top")
             self.__sections.update({"Etcetera": top_articles})
+
 
     def run(self) -> None:
         """ Create a newsletter from the sections data
