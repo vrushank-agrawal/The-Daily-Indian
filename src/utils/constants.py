@@ -13,7 +13,7 @@ MODEL_TEXT_SUMMARIZATION = "google/gemma-2-2b-it"
 MAX_CALLS_PER_15_MIN = 30
 
 # Number of API calls made in a day
-DAILY_API_LIMIT = 180
+DAILY_API_LIMIT = 200
 
 # Time window to fetch articles in minutes
 TIME_WINDOW = 1440
