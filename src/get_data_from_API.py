@@ -144,11 +144,12 @@ class NewsArticles():
 
         # Fetch all articles in 16 minute intervals until API limit reached
         calls = 0
-        while not self.__fetched_all_articles(apis) and calls < DAILY_API_LIMIT:
+        while (not (self.__fetched_all_articles(apis)) and (calls < (DAILY_API_LIMIT - MAX_CALLS_PER_15_MIN))):
+            calls += MAX_CALLS_PER_15_MIN   # 30 calls per 15 minutes
+            print(f'Last article fetched at: {self.__articles["articles"][-1]["pubDate"]}')
             print(f'API calls remaining: {DAILY_API_LIMIT - calls}')
             print('Sleeping for 16 minutes...')
             sleep(60*16)                    # 16 minutes
-            calls += MAX_CALLS_PER_15_MIN   # 30 calls per 15 minutes
 
         write_to_file(self.__articles)
 

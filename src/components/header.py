@@ -3,6 +3,8 @@ def create_header(date: str, news_summary: str = "") -> str:
     Create the header of the newsletter
     """
 
+    # TODO Fix the font size for the title for mobile display.
+
     header = f"""
         <header class="header section-text">
             <h1 class="title">The Daily Indian</h1>

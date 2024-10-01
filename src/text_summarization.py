@@ -5,6 +5,7 @@ from utils.read_write_IO import get_data
 
 import json
 import os
+import time
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -76,13 +77,26 @@ Each key should have the summary of the corresponding headline.
         """
 
         messages = self.__message_for_model(titles)
-        output = self.__client.chat.completions.create(
-            model = self.__model,
-            messages = messages,
-            temperature=MODEL_TEMPERATURE,
-            max_tokens=MAX_TOKENS,
-            top_p=TOP_P
-        )
+
+        retries = 3
+        for attempt in range(retries):
+            try:
+                output = self.__client.chat.completions.create(
+                    model=self.__model,
+                    messages=messages,
+                    temperature=MODEL_TEMPERATURE,
+                    max_tokens=MAX_TOKENS,
+                    top_p=TOP_P
+                )
+                break  # If the request is successful, exit the loop
+            except Exception as e:
+                if attempt < retries - 1:
+                    print(e)
+                    print(f"Attempt {attempt + 1} failed. Retrying in 2 minutes...")
+                    time.sleep(120)  # Wait for 2 minutes before retrying
+                else:
+                    raise e  # If it's the last attempt, raise the exception
+
         return output
 
 
