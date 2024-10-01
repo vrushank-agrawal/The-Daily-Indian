@@ -130,8 +130,6 @@ class NewsLetterHandler:
 
             print(title)
 
-        exit()
-
         if "top" in self.__sections:
             top_articles = self.__sections["top"]
             self.__sections.pop("top")
@@ -141,8 +139,8 @@ class NewsLetterHandler:
         """ Create a newsletter from the sections data
         """
 
-        # self.__create_data()
-        self.__sections = get_data('selected')
+        self.__create_data()
+        # self.__sections = get_data('selected')
         self.__modify_sections()
         self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
         write_html(self.__html)
