@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-def combine_sections(sections: List[Dict[str, str]]) -> str:
+def combine_points(sections: List[Dict[str, str]]) -> str:
     """ Combine all bullets in correct format
     """
 
@@ -20,7 +20,7 @@ def create_section(title, bullets: List[Dict[str, str]]) -> str:
     """ Create a section of the newsletter
     """
 
-    links = combine_sections(bullets)
+    links = combine_points(bullets)
     section = f"""
         <section class="section-text m-top-0">
             <hr class="m-top-0">

@@ -1,10 +1,11 @@
 import json
+from typing import Dict
 from datetime import datetime, timezone, timedelta
 # Get today's date for filename in EST timezone.
 TODAY_DATE = datetime.now(timezone(timedelta(hours=5))).strftime("%Y-%m-%d")
 
 
-def get_data(sub_folder: str, main_folder: str = 'data/newsdataio', date: str = TODAY_DATE) -> list:
+def get_data(sub_folder: str, main_folder: str = 'data/newsdataio', date: str = TODAY_DATE) -> Dict[str, list]:
     """
     Reads a JSON file containing a list of articles and returns the list of articles.
 
