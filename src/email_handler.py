@@ -50,7 +50,7 @@ class EmailHandler:
         """ Configure the email data.
         """
         self.__email_data = sib_api_v3_sdk.SendSmtpEmail(
-            # bcc=bcc,
+            bcc=self.__email_list,
             # cc=cc,
             headers={
                 'accept': 'application/json',
@@ -60,7 +60,7 @@ class EmailHandler:
             },
 
             sender={"name": email_constants.SENDER_NAME, "email": email_constants.SENDER_EMAIL},
-            to=self.__email_list,
+            to= [{"name": email_constants.SENDER_NAME, "email": email_constants.SENDER_EMAIL}],
             reply_to={"name": email_constants.REPLY_NAME, "email": email_constants.REPLY_EMAIL},
 
             subject=self.__email_subject,

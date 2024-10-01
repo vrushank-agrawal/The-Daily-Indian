@@ -1,3 +1,6 @@
+import os
+import base64
+
 from components import header, footer, styles, top_news
 from typing import List, Dict
 
@@ -22,9 +25,10 @@ def newsletter_template(
     """ Create an html email message
     """
 
+    image = "https://thedailyindian.vercel.app/images/logo.jpeg"
     header_summary_string = newsletter_summary(top_news_summaries)
     styles_string = styles.create_head()
-    header_string = header.create_header(date, header_summary_string)
+    header_string = header.create_header(date, image, header_summary_string)
     topNews_string = top_news.create_body(sections_news["top_news"])
     sections_news.pop("top_news")
     section_string = sections.create_sections(sections_news)

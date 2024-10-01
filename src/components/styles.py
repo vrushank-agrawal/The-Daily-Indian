@@ -96,6 +96,13 @@ def create_head() -> str:
             h1.title {
                 text-align: center;
                 font-size: 60px;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+
+            header .header-logo {
+                display: flex;
+                margin: auto;
             }
 
             ul.arrow {
@@ -114,6 +121,13 @@ def create_head() -> str:
                 font-size: 12px;
                 margin-top: 30px;
                 line-height: 12px;
+            }
+
+            /* Media query for mobile devices */
+            @media (max-width: 600px) {
+                h1.title {
+                    font-size: 25px;
+                }
             }
 
         </style>

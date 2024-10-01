@@ -14,11 +14,6 @@ from utils.read_write_IO import get_data
 from utils.constants import COLS_TO_CLEAN, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES
 from utils.constants import MODEL_SENTIMENT_ANALYSIS, MODEL_SENTENCE_SIMILARITY, MODEL_TEXT_SUMMARIZATION
 
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-
 import os
 from datetime import datetime, timezone
 from dotenv import load_dotenv
@@ -113,7 +108,6 @@ class NewsLetterHandler:
         #       What really constitutes the India Story?
 
 
-
     def __modify_sections(self) -> None:
         """ If any section has no news then remove it.
 
@@ -128,12 +122,11 @@ class NewsLetterHandler:
             else:
                 self.__sections.update({title: articles})
 
-            print(title)
-
         if "top" in self.__sections:
             top_articles = self.__sections["top"]
             self.__sections.pop("top")
             self.__sections.update({"Etcetera": top_articles})
+
 
     def run(self) -> None:
         """ Create a newsletter from the sections data
@@ -157,7 +150,7 @@ class NewsLetterHandler:
             print("Running in Development")
             subscribers = [
                 # {"email": "Deepika.sangal@gmail.com", "name": "Subscriber"},
-                {"email": "vrushank2001@gmail.com", "name": "Vrushank"}
+                {"email": "victorca2107@gmail.com", "name": "Victor"}
             ]
 
         email_handler = EmailHandler(
@@ -168,38 +161,6 @@ class NewsLetterHandler:
         )
         email_handler.send()
         print("Newsletter sent")
-
-
-    # def send_newsletter(self) -> None:
-    #     """ Send a newsletter email
-    #     """
-
-    #     print("Sending newsletter...")
-    #     sender_email = os.getenv("SENDER_EMAIL")
-    #     sender_password = os.getenv("SENDER_PASSWORD")
-    #     receiver_email = os.getenv("RECEIVER_EMAIL")
-
-    #     message = MIMEMultipart("alternative")
-    #     message["Subject"] = "The Indian Gospel Daily Digest"
-    #     message["From"] = sender_email
-    #     message["To"] = receiver_email
-
-    #     part = MIMEText(self.__html, "html")
-    #     message.attach(part)
-
-    #     # with open("src/utils/newsletter-logo.jpeg", "rb") as f:
-    #     #     image = MIMEImage(f.read())
-    #     # image.add_header("Content-ID", "<image1>")
-    #     # message.attach(image)
-
-    #     with smtplib.SMTP("smtp.gmail.com", 587) as server:
-    #         server.ehlo()
-    #         server.starttls()
-    #         server.ehlo()
-    #         server.login(sender_email, sender_password)
-    #         server.sendmail(sender_email, receiver_email, message.as_string())
-
-    #     print("Newsletter sent to {}".format(receiver_email))
 
 
 def write_html(html: str) -> None:
