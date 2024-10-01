@@ -120,15 +120,22 @@ class NewsLetterHandler:
         Rename top to other top articles
         """
 
-        top_articles = self.__sections["top"]
-        self.__sections.pop("top")
-        self.__sections.update({"Etcetera": top_articles})
-
-        for title, articles in self.__sections.items():
+        # Insert the sections in alphabetical order for the newsletter
+        for title, articles in sorted(self.__sections.items(), key=lambda x: x[0]):
+            self.__sections.pop(title)
             if articles == []:
                 print("No articles for section: ", title)
-                self.__sections.pop(title)
+            else:
+                self.__sections.update({title: articles})
 
+            print(title)
+
+        exit()
+
+        if "top" in self.__sections:
+            top_articles = self.__sections["top"]
+            self.__sections.pop("top")
+            self.__sections.update({"Etcetera": top_articles})
 
     def run(self) -> None:
         """ Create a newsletter from the sections data
