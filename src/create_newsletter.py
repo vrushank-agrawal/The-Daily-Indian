@@ -49,7 +49,7 @@ class NewsLetterHandler:
 
     def __init__(self) -> None:
         self.__date = datetime.now(timezone.utc).strftime("%A, %B %d, %Y")
-        self.__sections = []
+        self.__sections = {}
         self.__html = ''
         self.__subject = f"The Daily Indian: {self.__date}"
         self.__environment = os.getenv("ENVIRONMENT")
@@ -113,12 +113,30 @@ class NewsLetterHandler:
         #       What really constitutes the India Story?
 
 
+
+    def __modify_sections(self) -> None:
+        """ If any section has no news then remove it.
+
+        Rename top to other top articles
+        """
+
+        top_articles = self.__sections["top"]
+        self.__sections.pop("top")
+        self.__sections.update({"Etcetera": top_articles})
+
+        for title, articles in self.__sections.items():
+            if articles == []:
+                print("No articles for section: ", title)
+                self.__sections.pop(title)
+
+
     def run(self) -> None:
         """ Create a newsletter from the sections data
         """
 
         # self.__create_data()
         self.__sections = get_data('selected')
+        self.__modify_sections()
         self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
         write_html(self.__html)
         print("Newsletter created")
