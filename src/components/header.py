@@ -1,4 +1,4 @@
-def create_header(date: str, news_summary: str = "") -> str:
+def create_header(date: str, img: str, news_summary: str = "") -> str:
     """
     Create the header of the newsletter
     """
@@ -7,7 +7,7 @@ def create_header(date: str, news_summary: str = "") -> str:
 
     header = f"""
         <header class="header section-text">
-            <h1 class="title">The Daily Indian</h1>
+            <img class="header-logo" src="{img}" alt="Logo" width="auto" height="150">
 
             <hr>
 

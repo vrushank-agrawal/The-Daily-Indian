@@ -60,7 +60,7 @@ class EmailHandler:
             },
 
             sender={"name": email_constants.SENDER_NAME, "email": email_constants.SENDER_EMAIL},
-            to={"name": email_constants.SENDER_NAME, "email": email_constants.SENDER_EMAIL},
+            to= [{"name": email_constants.SENDER_NAME, "email": email_constants.SENDER_EMAIL}],
             reply_to={"name": email_constants.REPLY_NAME, "email": email_constants.REPLY_EMAIL},
 
             subject=self.__email_subject,

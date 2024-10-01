@@ -122,8 +122,6 @@ class NewsLetterHandler:
             else:
                 self.__sections.update({title: articles})
 
-            print(title)
-
         if "top" in self.__sections:
             top_articles = self.__sections["top"]
             self.__sections.pop("top")
@@ -152,7 +150,7 @@ class NewsLetterHandler:
             print("Running in Development")
             subscribers = [
                 # {"email": "Deepika.sangal@gmail.com", "name": "Subscriber"},
-                {"email": "vrushank2001@gmail.com", "name": "Vrushank"}
+                {"email": "victorca2107@gmail.com", "name": "Victor"}
             ]
 
         email_handler = EmailHandler(
