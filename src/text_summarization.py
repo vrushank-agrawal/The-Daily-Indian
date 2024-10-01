@@ -34,7 +34,6 @@ class TextSummarization:
     def __init__(self, articles: List[Dict[str, str]], model: str = DEFAULT_MODEL) -> None:
         self.__top_news_articles = articles
         self.__model = model
-        self.__pipe = pipeline("text-generation", model=self.__model, model_kwargs={"torch_dtype": torch.bfloat16})
         self.__subject: str = ""
 
 
@@ -150,6 +149,7 @@ Each key should have the summary of the corresponding headline.
         if not logged_in:
             return 0
 
+        self.__pipe = pipeline("text-generation", model=self.__model, model_kwargs={"torch_dtype": torch.bfloat16})
         titles = self.__extract_titles()
         model_output = self.__get_model_output(titles)
         self.__subject = self.__convert_output_to_subject(model_output)
