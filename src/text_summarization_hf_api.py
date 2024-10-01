@@ -1,12 +1,11 @@
-import torch
-from transformers import pipeline
-from transformers.pipelines.base import Pipeline
-from huggingface_hub import HfApi, login
+from huggingface_hub import InferenceClient
+from huggingface_hub.inference._generated.types.chat_completion import ChatCompletionOutput
 from typing import List, Dict
 from utils.read_write_IO import get_data
 
 import json
 import os
+import time
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -34,38 +33,8 @@ class TextSummarization:
     def __init__(self, articles: List[Dict[str, str]], model: str = DEFAULT_MODEL) -> None:
         self.__top_news_articles = articles
         self.__model = model
-        self.__pipe = pipeline("text-generation", model=self.__model, model_kwargs={"torch_dtype": torch.bfloat16})
+        self.__client = InferenceClient(api_key=os.getenv('HUGGINGFACE_READ_API_KEY'))
         self.__subject: str = ""
-
-
-    def __hugging_face_login(self) -> int:
-        """ Tries to log into Hugging Face Hub.
-
-        Returns
-        -------
-        int
-            1 if logged in successfully, 0 otherwise.
-        """
-
-        api = HfApi()
-
-        try:
-            user_info = api.whoami()
-            print(f'Logged in as: {user_info["name"]}')
-
-        except:
-            print('Not logged in. Logging in...')
-            login(os.getenv('HUGGINGFACE_READ_API_KEY'))
-
-            try:
-                user_info = api.whoami()
-                print(f'Logged in as: {user_info["name"]}')
-
-            except:
-                print('Failed to login. Exiting...')
-                return 0
-
-        return 1
 
 
     def __extract_titles(self) -> List[str]:
@@ -103,18 +72,35 @@ Each key should have the summary of the corresponding headline.
         return messages
 
 
-    def __get_model_output(self, titles: List[str]) -> Pipeline:
+    def __get_model_output(self, titles: List[str]) -> ChatCompletionOutput:
         """ Get the summaries of the top news articles.
         """
 
         messages = self.__message_for_model(titles)
-        print("Generating summaries...")
-        output = self.__pipe(messages, max_length=MAX_TOKENS)
-        print("Summaries generated")
+
+        retries = 3
+        for attempt in range(retries):
+            try:
+                output = self.__client.chat.completions.create(
+                    model=self.__model,
+                    messages=messages,
+                    temperature=MODEL_TEMPERATURE,
+                    max_tokens=MAX_TOKENS,
+                    top_p=TOP_P
+                )
+                break  # If the request is successful, exit the loop
+            except Exception as e:
+                if attempt < retries - 1:
+                    print(e)
+                    print(f"Attempt {attempt + 1} failed. Retrying in 2 minutes...")
+                    time.sleep(120)  # Wait for 2 minutes before retrying
+                else:
+                    raise e  # If it's the last attempt, raise the exception
+
         return output
 
 
-    def __convert_output_to_subject(self, model_output: Pipeline) -> str:
+    def __convert_output_to_subject(self, model_output: ChatCompletionOutput) -> str:
         """ Convert the model output (JSON) to list of summaries.
 
         :param model_output: The model output.
@@ -124,7 +110,7 @@ Each key should have the summary of the corresponding headline.
         """
 
         # Fetch the agent response from the model output
-        json_output = model_output[0]['generated_text'][-1]['content']
+        json_output = model_output['choices'][0]['message']['content']
 
         # Convert the output to json compatible format
         json_output = json_output.replace('`', '')
@@ -141,23 +127,18 @@ Each key should have the summary of the corresponding headline.
         return summary
 
 
-    def run(self) -> int:
+    def run(self) -> List[Dict[str, str]]:
         """ Entry point of the class.
             Sets the subject of the newsletter email.
         """
 
-        logged_in = self.__hugging_face_login()
-        if not logged_in:
-            return 0
-
         titles = self.__extract_titles()
         model_output = self.__get_model_output(titles)
         self.__subject = self.__convert_output_to_subject(model_output)
-        return 1
 
 
 if __name__ == '__main__':
     top_news_articles = get_data('selected')['top_news']
     summarizer = TextSummarization(top_news_articles)
     summarizer.run()
-    print(getattr(summarizer, '_TextSummarization__subject'))
+    print(getattr(summarizer, '_TextSummarization__summaries'))

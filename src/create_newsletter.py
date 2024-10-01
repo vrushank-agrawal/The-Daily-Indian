@@ -102,8 +102,9 @@ class NewsLetterHandler:
 
         # Title Text Summarizer
         summarizer = TextSummarization(self.__sections["top_news"], MODEL_TEXT_SUMMARIZATION)
-        summarizer.run()
-        self.__subject = getattr(summarizer, '_TextSummarization__subject')
+        logged_in = summarizer.run()
+        if logged_in:   # If logged in get the new subject
+            self.__subject = getattr(summarizer, '_TextSummarization__subject')
 
         # TODO  Figure out the content format of top_news.
         #       Does the description need to be expanded?
@@ -116,8 +117,8 @@ class NewsLetterHandler:
         """ Create a newsletter from the sections data
         """
 
-        self.__create_data()
-        # self.__sections = get_data('selected')
+        # self.__create_data()
+        self.__sections = get_data('selected')
         self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
         write_html(self.__html)
         print("Newsletter created")
