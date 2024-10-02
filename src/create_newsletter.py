@@ -136,9 +136,9 @@ class NewsLetterHandler:
         # self.__sections = get_data('selected')
         self.__modify_sections()
         self.__html = newsletter_template.newsletter_template(self.__date, self.__sections)
-        write_html(self.__html)
         print("Newsletter created")
 
+        write_html(self.__html)
         # self.__html = get_html()
 
         if self.__environment == 'production':
@@ -170,10 +170,14 @@ def write_html(html: str) -> None:
     Args:
         articles (list): The list of articles to write.
     """
-    with open(f'data/newsdataio/newsletter/{TODAY_DATE}.html', 'w') as f:
-        f.write(html)
+    try:
+        with open(f'data/newsdataio/newsletter/{TODAY_DATE}.html', 'w') as f:
+            f.write(html)
 
-    print(f'Wrote Newsletter to newsletter.html')
+        print(f'Wrote Newsletter to newsletter.html')
+
+    except Exception as e:
+        print(e)
 
 
 def get_html() -> str:
@@ -192,4 +196,3 @@ def get_html() -> str:
 if __name__ == "__main__":
     newsletter = NewsLetterHandler()
     newsletter.run()
-    # newsletter.send_newsletter()
