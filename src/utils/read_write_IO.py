@@ -12,11 +12,18 @@ def get_data(sub_folder: str, main_folder: str = 'data/newsdataio', date: str = 
     Returns:
         list: The list of articles.
     """
-    with open(f'{main_folder}/{sub_folder}/{date}.json', 'r') as f:
-        data = json.load(f)
+
+    try:
+        with open(f'{main_folder}/{sub_folder}/{date}.json', 'r') as f:
+            data = json.load(f)
+
+        return data
+
+    except Exception as e:
+        print(e)
+        exit(1)
 
     # Extract the list of articles from the JSON data.
-    return data
 
 
 def write_data(articles: list, sub_folder: str, main_folder: str = 'data/newsdataio', date: str = TODAY_DATE) -> None:
@@ -26,7 +33,11 @@ def write_data(articles: list, sub_folder: str, main_folder: str = 'data/newsdat
     Args:
         articles (list): The list of articles to write.
     """
-    with open(f'{main_folder}/{sub_folder}/{date}.json', 'w') as f:
-        json.dump(articles, f, indent=4)
+    try:
+        with open(f'{main_folder}/{sub_folder}/{date}.json', 'w') as f:
+            json.dump(articles, f, indent=4)
 
-    print(f'Wrote {len(articles)} articles to {sub_folder}')
+        print(f'Wrote {len(articles)} articles to {sub_folder}')
+
+    except Exception as e:
+        print(e)
