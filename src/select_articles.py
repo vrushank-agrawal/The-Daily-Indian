@@ -43,6 +43,17 @@ class SelectArticles:
         self.__selected_articles[category] = cat_df.head(3)
 
 
+    def __select_top_x(self, num: int, category: str = "top") -> None:
+        """ Selects the top x articles from the specified category.
+
+        :param category: The category to select the top x articles from. Defaults to "top".
+        :param num: The number of articles to select.
+        """
+
+        cat_df = self.__df[self.__df['category'] == category]
+        self.__selected_articles[category] = cat_df.head(num)
+
+
     def __drop_cols(self, cat: str) -> None:
         """ Drops the specified columns from the given category dataframe.
 
@@ -66,6 +77,8 @@ class SelectArticles:
         self.__maximize_sentiment_score()
         self.__sort_by_sentiment_score()
         for cat in self.__categories_to_get:
+            if cat == "top":
+                self.__select_top_x(8, cat)
             self.__select_top_three(cat)
             self.__drop_cols(cat)
             self.__convert_df_to_dict(cat)
