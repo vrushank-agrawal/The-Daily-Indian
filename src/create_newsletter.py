@@ -104,9 +104,6 @@ class NewsLetterHandler:
         # TODO  Figure out the content format of top_news.
         #       Does the description need to be expanded?
 
-        # TODO  Figure out the right categories to display.
-        #       What really constitutes the India Story?
-
 
     def __modify_sections(self) -> None:
         """ If any section has no news then remove it.

@@ -79,7 +79,8 @@ class SelectArticles:
         for cat in self.__categories_to_get:
             if cat == "top":
                 self.__select_top_x(8, cat)
-            self.__select_top_three(cat)
+            else:
+                self.__select_top_three(cat)
             self.__drop_cols(cat)
             self.__convert_df_to_dict(cat)
 
