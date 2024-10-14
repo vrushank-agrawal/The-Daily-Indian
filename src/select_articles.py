@@ -79,7 +79,8 @@ class SelectArticles:
         for cat in self.__categories_to_get:
             if cat == "top":
                 self.__select_top_x(8, cat)
-            self.__select_top_three(cat)
+            else:
+                self.__select_top_three(cat)
             self.__drop_cols(cat)
             self.__convert_df_to_dict(cat)
 
@@ -87,7 +88,7 @@ class SelectArticles:
 
 
 if __name__ == "__main__":
-    from utils.constants import COLS_TO_DROP, CATEGORIES_TO_GET
+    from utils.constants import COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES
     articles = get_data('sentence')
-    selected = SelectArticles(articles, COLS_TO_DROP, CATEGORIES_TO_GET)
+    selected = SelectArticles(articles, COLS_TO_NOT_SELECT, DISPLAY_CATEGORIES)
     selected.run()
