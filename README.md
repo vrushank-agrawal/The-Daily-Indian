@@ -1,6 +1,6 @@
 # The Daily Indian
 
-**The Daily Indian** is a comprehensive package designed to create and send out daily newsletters to all subscribers automatically. This project leverages various APIs to fetch the latest news articles and utilizes several Natural Language Processing (NLP) models to select the most relevant and suited articles for the newsletter. The entire application is containerized using Docker and deployed to DockerHub for easy deployment and scalability.
+**The Daily Indian** is a comprehensive package designed to create and send out daily newsletters to all subscribers automatically. Learn more about it and subscribe to the newsletter [here](https://thedailyindian.vercel.app/).
 
 ## Features
 
