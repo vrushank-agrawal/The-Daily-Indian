@@ -9,8 +9,8 @@ on:
         required: false
         default: "production"
         type: string
-  schedule:
-    - cron: "30 2 * * 1-6"
+  # schedule:
+  #   - cron: "30 2 * * 1-6"
 
 jobs:
   build:
